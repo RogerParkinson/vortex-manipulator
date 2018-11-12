@@ -8,14 +8,6 @@ IntervalTimer logTimer;
 String command;
 Intervals intervals;
 
-void checkPulse() { // triggered when Timer fires
-	volatile int signal = 0;//analogRead(PULSE_PIN); // read the Pulse Sensor
-	heartRateInterrupt.calculate(signal);
-} // end isr
-
-//void logPulse() { // triggered when Timer fires
-//	heartRateInterrupt.log();
-//} // end isr
 class HRAction : public Action {
 public:
 	HRAction(){};
@@ -154,8 +146,6 @@ void setup() {
 #endif
 	Appregistry.init();
 	noInterrupts();
-//	hrTimer.begin(checkPulse,2000);
-//	logTimer.begin(logPulse,600000000); // 10 minutes=600000000
 	interrupts();
 #ifdef VORTEXMANIPULATOR_DEBUG
 	Serial.print("Screen: width = ");
@@ -165,8 +155,7 @@ void setup() {
 	Serial.println("end of setup");
 	Serial.read();
 #endif
-//	intervals.create(10000L,new TestAction());
-	intervals.create(10L,new HRAction()); // 10 seconds (too long?)
+	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
 }
 
@@ -215,9 +204,6 @@ void loop() {
 			cycle = 0;
 			Appregistry.getCurrentApp()->setup();
 			Appregistry.getCurrentApp()->display();
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("called display #1"));
-#endif
 		}
 		if (!asleep && (currentGesture == 2)) {
 #ifdef VORTEXMANIPULATOR_DEBUG
@@ -237,9 +223,6 @@ void loop() {
 			Hardware.wake();
 			Appregistry.getCurrentApp()->setup();
 			Appregistry.getCurrentApp()->display();
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("called display #2"));
-#endif
 			lastEventMicros = micros();
 		}
 		cycle = 0; // Ensure we don't sleep if we are operating.
@@ -276,9 +259,6 @@ void loop() {
 	if ((m-lastEventMicros) > Appregistry.getCurrentApp()->getUpdateInterval()) {
 		if (!asleep) {
 			Appregistry.getCurrentApp()->display();
-#ifdef VORTEXMANIPULATOR_DEBUG
-//			Serial.println(PSTR("called display #3"));
-#endif
 		}
 		lastEventMicros = m;
 	}
@@ -291,9 +271,6 @@ void loop() {
 		cycle = 0; // if we get here then start again.
 		Appregistry.getCurrentApp()->setup();
 		Appregistry.getCurrentApp()->display();
-#ifdef VORTEXMANIPULATOR_DEBUG
-//			Serial.println(PSTR("called display #4"));
-#endif
 	}
 	delay(LOOP_DELAY);
 }

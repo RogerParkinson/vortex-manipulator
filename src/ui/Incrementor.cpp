@@ -11,6 +11,7 @@ Incrementor::Incrementor(int x, int y, int size, int rangeLow, int rangeHigh): B
 	m_rangeLow = rangeLow;
 	m_rangeHigh = rangeHigh;
 	setText(m_valueString);
+	m_value = 0;
 }
 
 Incrementor::~Incrementor() {

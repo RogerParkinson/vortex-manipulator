@@ -41,13 +41,6 @@ public:
 	virtual void display();
 	virtual void close();
 	virtual const char* getName() {return PSTR("Compass");};
-	// Fix to cope with odd stuff in the touch
-//	virtual void setMenuPos(int x1, int y1, int x2, int y2) {
-//		m_x1 = 165;
-//		m_y1 =19;
-//		m_x2 = 189;
-//		m_y2 =44;
-//	}
 	virtual ~Compass();
 };
 

@@ -14,7 +14,7 @@ public:
 	Action(){};
 	virtual const char* getName() {return PSTR("Action");};
 	virtual void execute();
-//	virtual ~Action();
+	virtual ~Action(){};
 };
 
 class Interval {

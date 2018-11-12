@@ -79,11 +79,10 @@ bool ImageDisplay::displayFile() {
 	return goodBmp;
 }
 void ImageDisplay::pushColors(uint16_t *data, uint8_t len, boolean first) {
-//	Graphics.pushColors(data, len, first);
 	m_totalLen += len;
 }
 
 ImageDisplay::~ImageDisplay() {
-	// TODO Auto-generated destructor stub
+	// Auto-generated destructor stub
 }
 

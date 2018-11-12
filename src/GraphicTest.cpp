@@ -97,11 +97,6 @@ void GraphicTest::display() {
 	print(testFilledRoundRects());
 	delay(500);
 
-//	for (uint8_t rotation = 0; rotation < 4; rotation++) {
-//		Graphics.setRotation(rotation);
-//		testText();
-//		delay(2000);
-//	}
 	Appregistry.jumpToMenu();
 
 }

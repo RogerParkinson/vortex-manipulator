@@ -9,7 +9,6 @@
 #define HEARTRATEINTERRUPT_H_
 #include "Arduino.h"
 #include "../Configuration.h"
-//#include "../ui/Interval.h"
 #include <wiring.h>
 
 #define PREVBUFSIZE 30

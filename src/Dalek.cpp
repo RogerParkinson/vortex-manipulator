@@ -39,6 +39,12 @@ static uint16_t myicon[] PROGMEM = {
 
 
 Dalek::Dalek() {
+	currentColour = BLUE;
+	circleSize = 1;
+	m_width = Graphics.width();
+	m_height = Graphics.height();
+	m_cy = Graphics.height() / 2;
+	m_cx = Graphics.width() / 2;
 }
 void Dalek::init() {
 #ifdef DEBUG_DALEK
@@ -70,13 +76,6 @@ void Dalek::setup() {
 	lastx = Hardware.getAccelerometerValues().x;
 }
 void Dalek::display() {
-#ifdef DEBUG_DALEK
-//	Serial.print(PSTR("Dalek display"));
-//	Serial.print(PSTR(" circleSize="));
-//	Serial.print(circleSize);
-//	Serial.print(PSTR(" currentColour="));
-//	Serial.println(currentColour);
-#endif
 	Graphics.drawCircle(m_cx,m_cy,RADIUS*circleSize,BLACK);
 	if (++circleSize > 8) {
 		circleSize = 1;

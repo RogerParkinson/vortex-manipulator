@@ -41,13 +41,6 @@ public:
 	virtual const char* getName() {return PSTR("Gallery");};
 	void imgDraw(char *filename, int x, int y);
 	virtual ~Gallery();
-	// Fix to cope with odd stuff in the touch
-//	virtual void setMenuPos(int x1, int y1, int x2, int y2) {
-//		m_x1 = 86;
-//		m_y1 =82;
-//		m_x2 = 94;
-//		m_y2 =106;
-//	}
 };
 
 #endif /* Gallery_H_ */

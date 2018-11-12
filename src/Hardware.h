@@ -125,14 +125,11 @@ public:
 	bool isSDOK() { return m_sdOK;};
 	bool beginSD();
 	const char *timeString(long adjustedDate);
-	const char *shortTimeString(long adjustedDate);
 	const char *dateString(long adjustedDate);
 	void setCompassCorrection(const char *str);
 	int getCompassCorrection();
 	void progmemPrint(const char *str);
 	void progmemPrintln(const char *str);
-//	void drawIcon(const int x, const int y, const Icon *icon);
-//	void drawIcon(const unsigned int size,const int x, const int y, const char *pImg);
 	void printDirectory(File dir, int numTabs);
 	int readInt(File dataFile);
 	float getBatteryVoltage();

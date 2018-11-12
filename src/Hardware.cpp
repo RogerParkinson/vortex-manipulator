@@ -107,8 +107,6 @@ void Hardware_::wake() {
 	blink1();
 	Graphics.sleep(false);
 	Graphics.begin();
-//	Graphics.setRotation(3);
-//	Graphics.fillScreen(BLACK);
 #ifdef HARDWARE_DEBUG
 	Serial.begin(9600);
 	Serial.println(PSTR("waking...."));
@@ -279,27 +277,8 @@ void Hardware_::progmemPrintln(const char *str) {
 	Serial.println();
 }
 
-//void Hardware_::drawIcon(const int x, const int y, const Icon *icon) {
-//	drawIcon(icon->size,x,y,(const char *)icon->bitmap);
-//}
-//void Hardware_::drawIcon(const unsigned int size,const int x, const int y, const char *pImg) {
-//	char pRGB[3];
-//	for (unsigned int j = 0; j < size; j++)
-//	for (unsigned int i = 0; i < size; i++)
-//	{
-//		HEADER_PIXEL(pImg, pRGB)
-//		uint16_t colour = ((unsigned long)pRGB[0])+
-//				(((unsigned long)pRGB[1])<<8)+
-//				(((unsigned long)pRGB[2])<<16);
-//		Graphics.drawPixel(x+i,y+j, colour);
-//	}
-//}
 const char *Hardware_::timeString(long adjustedDate) {
 	sprintf(dstring, PSTR("%02d:%02d:%02d"),hour(adjustedDate),minute(adjustedDate),second(adjustedDate));
-	return dstring;
-}
-const char *Hardware_::shortTimeString(long adjustedDate) {
-	sprintf(dstring, PSTR("%02d:%02d"),hour(adjustedDate),minute(adjustedDate),second(adjustedDate));
 	return dstring;
 }
 const char *Hardware_::dateString(long adjustedDate) {
@@ -337,11 +316,6 @@ uint32_t Hardware_::read32(File f) {
   ((uint8_t *)&result)[2] = f.read();
   ((uint8_t *)&result)[3] = f.read(); // MSB
   return result;
-}
-
-void Hardware_::bufferAccelerometer() {
-//	LSM303::vector<int16_t> acc = Hardware.getAccelerometerValues();
-//	cb.put(acc);
 }
 
 HeartRateInterrupt heartRateInterrupt = HeartRateInterrupt(now());

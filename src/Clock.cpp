@@ -100,7 +100,7 @@ void Clock::display() {
 	Graphics.setTextSize(3);
 	Graphics.setFont(Arial_20);
 
-	long adjustedDate = now();// + (m_timeZone * SECS_PER_HOUR);
+	long adjustedDate = now();
 
 	Graphics.println(Hardware.timeString(adjustedDate));
 	Graphics.setCursor(50,100);

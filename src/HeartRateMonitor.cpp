@@ -67,10 +67,6 @@ void HeartRateMonitor::init() {
 	m_map = new SimpleMap();
 }
 void HeartRateMonitor::setup() {
-//#ifdef HEARTRATEMONITOR_DEBUG
-//	Serial.print(getName());
-//	Serial.println("::setup");
-//#endif
 	Graphics.fillScreen(WHITE);
 	Graphics.setRotation(3);
 	Graphics.setTextSize(1);
@@ -85,34 +81,6 @@ void HeartRateMonitor::setup() {
 	initaliseGraph(0, 0);
 }
 boolean HeartRateMonitor::touch(TS_Point p) {
-//#ifdef HEARTRATEMONITOR_DEBUG
-//	Serial.print(getName());
-//	Serial.println("::touch");
-//	float min = MIN_GUESS;
-//	float max = MAX_GUESS;
-//	int j = (m_prevPopulated?PREV_BUFSIZE:m_prevCount);
-//	for (int i=0; i < j;i++) {
-//		Serial.print(",");
-//		Serial.print(m_prev[i]);
-//		max = max(max,m_prev[i]);
-//		min = min(min,m_prev[i]);
-//	}
-//	Serial.println(" ");
-//	float denom = max - min;
-//	if (denom < 0.001) {
-//		denom = 1;
-//	}
-//	float scale = (SCREEN_HEIGHT)/denom;
-//	Serial.print("   min=");
-//	Serial.print(min);
-//	Serial.print(" max=");
-//	Serial.print(max);
-//	Serial.print(" denom=");
-//	Serial.print(denom);
-//	Serial.print(" scale=");
-//	Serial.print(scale);
-//	Serial.println();
-//#endif
 	m_effects = !m_effects;
 	heartRateInterrupt.setEffects(m_effects);
 	heartRateInterrupt.reset();
@@ -137,21 +105,6 @@ void HeartRateMonitor::figureScale() {
 	m_lastScale = (SCREEN_HEIGHT)/denom;
 	m_scaledLastMin = minn;
 	m_scaledLastMax = maxx;
-#ifdef HEARTRATEMONITOR_DEBUG
-//	Serial.print(getName());
-//	Serial.print("::figureScale");
-//	Serial.print(" j=");
-//	Serial.print(j);
-//	Serial.print(" denom=");
-//	Serial.print(denom);
-//	Serial.print(" m_lastScale=");
-//	Serial.print(m_lastScale);
-//	Serial.print(" min=");
-//	Serial.print(min);
-//	Serial.print(" max=");
-//	Serial.print(max);
-//	Serial.println();
-#endif
 }
 void HeartRateMonitor::display() {
 
@@ -176,56 +129,7 @@ void HeartRateMonitor::display() {
 		initaliseGraph(bpm,interval);
 	}
 	y = constrain(y, 0, (SCREEN_HEIGHT));
-#ifdef HEARTRATEMONITOR_DEBUG
-//	Serial.print(getName());
-//	Serial.print("::display");
-////	Serial.print(" lasty=");
-////	Serial.print(lasty);
-////	Serial.print(" m_scaledLastMin=");
-////	Serial.print(m_scaledLastMin);
-////	Serial.print(" m_scaledLastMax=");
-////	Serial.print(m_scaledLastMax);
-////	Serial.print(" m_lastScale=");
-////	Serial.print(m_lastScale);
-////	Serial.print(" m_lastX=");
-////	Serial.print(m_lastX);
-////	Serial.print(" y=");
-////	Serial.print(y);
-////	Serial.print(" gy=");
-////	Serial.print(SCREEN_OFFSET+((SCREEN_HEIGHT)-y));
-//	Serial.print(" bpm=");
-//	Serial.print(bpm);
-//	Serial.print(" interval=");
-//	Serial.print(interval);
-//	Serial.println();
-#endif
 	Graphics.drawPixel(m_lastX,SCREEN_OFFSET+((SCREEN_HEIGHT)-y),BLACK);
-//	y = (interval-800)*0.4;
-//	x = (m_lastInterval-800)*0.4;
-//	if (bpm > 20 && bpm < 200) {
-//		// Only plot things from likely heart rates
-//		long key = (x*10000)+y;
-//		int colour = BLACK;
-//		if (key > 0) {
-//			int frequency = m_map->put(key);
-//			if (frequency < 20) {
-//				colour = BLUE;
-//			} else if (frequency < 50) {
-//				colour = GREEN;
-//			} else if (frequency < 80) {
-//				colour = YELLOW;
-//			} else {
-//				colour = RED;
-//			}
-//		}
-//		Graphics.drawPixel(x+160,100-y,colour);
-//	}
-//	m_lastInterval = interval;
-
-#ifdef HEARTRATEMONITOR_DEBUG
-//	Serial.print(getName());
-//	Serial.println("::display exit");
-#endif
 }
 
 void HeartRateMonitor::initaliseGraph(int bpm, float interval) {

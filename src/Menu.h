@@ -20,8 +20,6 @@
 
 class Menu: public App {
 private:
-//	uint16_t m_height;
-//	uint16_t m_width;
 public:
 	Menu();
 	virtual void setup();

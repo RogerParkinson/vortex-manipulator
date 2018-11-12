@@ -241,18 +241,10 @@ void Gallery::imgDraw(char *filename, int x, int y) {
 	  if(!goodBmp) Serial.println(F("BMP format not recognized."));
 }
 
-//void Gallery::pushColors(uint16_t *data, uint8_t len, boolean first) {
-//	Graphics.pushColors(data, len, first);
-//	m_totalLen += len;
-//}
-
 Gallery::~Gallery() {
 }
-//GalleryTFT::~GalleryTFT() {
-//}
 
 App *gallery = new Gallery();
-//App *galleryTFT = new GalleryTFT();
 
 
 

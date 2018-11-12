@@ -47,7 +47,6 @@ public:
 	}
 	void draw() {
 		m_icon->draw(m_x, m_y);
-//		Hardware.drawIcon(14,m_x, m_y, &header_data[0]);
 	}
 	void erase() {
 		Graphics.fillCircle(m_x + 7, m_y + 7, 10, BLACK);

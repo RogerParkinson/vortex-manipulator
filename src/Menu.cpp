@@ -79,8 +79,6 @@ void Menu::setup() {
 			Serial.print(icon_x);
 			Serial.print(PSTR(" y="));
 			Serial.print(icon_y);
-//			Serial.print(PSTR(" bitmapsize="));
-//			Serial.print(strlen(icon->bitmap));
 			Serial.print(BLANK);
 			Serial.println(app->getName());
 #endif

@@ -15,6 +15,10 @@ const char *MATCH = PSTR(" match!");
 
 App::App() {
 		Appregistry.registerApp(this);
+		m_x1 = 0;
+		m_y1 = 0;
+		m_x2 = 0;
+		m_y2 = 0;
 	};
 
 

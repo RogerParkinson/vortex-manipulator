@@ -45,6 +45,7 @@ Compass::Compass(): App() {
 	m_cradius = 0;
 	m_arrowSide = 0;
 	m_height = 0;
+	last_heading_radians = 0;
 }
 void Compass::init() {
 #ifdef COMPASS_DEBUG
