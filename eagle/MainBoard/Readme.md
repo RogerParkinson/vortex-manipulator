@@ -31,7 +31,7 @@ A third strip just in front of the Teensy has some connectors that expose the un
  * 29
  * A12
 
-The (MAX30102 heart rate monitor)[https://www.aliexpress.com/item/Low-Power-MAX30102-Heart-Rate-Oxygen-Pulse-Breakout-for-Arduino-Replace-MAx30100/32892216359.html?spm=a2g0s.9042311.0.0.27424c4dVejVpp] is connected directly to the Teensy SDA and SCL pins, plus 3.3v power and GND.
+The [MAX30102 heart rate monitor](https://www.aliexpress.com/item/Low-Power-MAX30102-Heart-Rate-Oxygen-Pulse-Breakout-for-Arduino-Replace-MAx30100/32892216359.html?spm=a2g0s.9042311.0.0.27424c4dVejVpp) is connected directly to the Teensy SDA and SCL pins, plus 3.3v power and GND.
 
 Finally the Teensy on-board clock needs a backup coin cell battery connected to the battery and GND connectors on the Teensy.
  

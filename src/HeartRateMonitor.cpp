@@ -273,6 +273,7 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 		int i = interval;
 		Graphics.print(i);
 	}
+#ifdef POINCARE
 	Graphics.drawRect(160, 0, 160, 100, BLACK);
 	for (int i=1;i<maxPoincare;i++) {
 		float i1 = poincare->get(i-1);
@@ -295,7 +296,7 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 		}
 		Graphics.fillCircle(constrain(x,0,320),constrain(y,0,240),2,colour);
 	}
-
+#endif
 }
 
 void HeartRateMonitor::close() {

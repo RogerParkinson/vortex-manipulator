@@ -16,7 +16,7 @@
 
 //#define VORTEXMANIPULATOR_DEBUG
 //#define TOUCH_DEBUG
-#define RUN_STARTUP
+//#define RUN_STARTUP
 #define LOOP_DELAY 5
 #define MAX_CYCLE 32000/LOOP_DELAY //32000/LOOP_DELAY
 #define TIMESTAMP_CYCLE 30 * ((0.75 * 60 * 1000) /5) // should be 1 minute it is 1:20 or 1.3 so change it to .75 of that => 30

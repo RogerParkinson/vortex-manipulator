@@ -13,6 +13,7 @@
 #include <cassert>
 
 //#define HEARTRATEMONITOR_DEBUG
+//#define POINCARE // turns on Poincare plot
 #define MAX_GUESS 0
 #define MIN_GUESS 112632
 #define PREV_BUFSIZE 40
