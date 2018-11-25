@@ -11,7 +11,7 @@
 #include <cassert>
 
 //#define COMPASS_DEBUG
-#define ANGLE_CORRECTION	1200
+//#define ANGLE_CORRECTION	1200
 #define CIRCLE_PORTION	0.60
 #define ARROW_LENGTH 40
 #define ARROW_WIDTH (15 * DEG_TO_RAD)

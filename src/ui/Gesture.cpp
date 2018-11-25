@@ -32,22 +32,26 @@ int Gesture::evaluate() {
 //		Serial.print(" tail ");
 //		Serial.println(buf_[tail_].z);
 #endif
-		if ((buf_[tail_].z - buf_[head_].z) > 500) {
+		if ((buf_[tail_].z - buf_[head_].z) > DIFF) {
 #ifdef GESTURE_DEBUG
 			Serial.print("head ");
 			Serial.print(buf_[head_].z);
 			Serial.print(" tail ");
-			Serial.println(buf_[tail_].z);
+			Serial.print(buf_[tail_].z);
+			Serial.print(" diff ");
+			Serial.println(buf_[tail_].z - buf_[head_].z);
 			Serial.println("gesture 1 detected");
 #endif
 			return 1;
 		}
-		if ((buf_[head_].z - buf_[tail_].z) > 500) {
+		if ((buf_[head_].z - buf_[tail_].z) > DIFF) {
 #ifdef GESTURE_DEBUG
 			Serial.print("head ");
 			Serial.print(buf_[head_].z);
 			Serial.print(" tail ");
-			Serial.println(buf_[tail_].z);
+			Serial.print(buf_[tail_].z);
+			Serial.print(" diff ");
+			Serial.println(buf_[head_].z - buf_[tail_].z);
 			Serial.println("gesture 2 detected");
 #endif
 			return 2;

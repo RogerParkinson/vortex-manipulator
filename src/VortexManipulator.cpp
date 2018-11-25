@@ -29,6 +29,31 @@ public:
 	virtual ~HRLogAction(){};
 };
 
+class GestureWake : public Action {
+public:
+	GestureWake(){};
+	virtual const char* getName() {return PSTR("GestureWake");};
+	virtual void execute() {
+		int currentGesture = gesture.evaluate();
+		bool asleep = Hardware.isSleeping();
+		if (asleep && (currentGesture == 1)) {
+#ifdef VORTEXMANIPULATOR_DEBUG
+			Serial.println(PSTR("waking from gesture"));
+#endif
+			Hardware.wake();
+			Appregistry.getCurrentApp()->setup();
+			Appregistry.getCurrentApp()->display();
+		}
+		if (!asleep && (currentGesture == 2)) {
+#ifdef VORTEXMANIPULATOR_DEBUG
+			Serial.println(PSTR("sleeping from gesture"));
+#endif
+			Hardware.sleep();
+		}
+	}
+	virtual ~GestureWake(){};
+};
+
 TS_Point convertPoint(TS_Point p,uint8_t rotation) {
 //#ifdef VORTEXMANIPULATOR_DEBUG
 //		Serial.println(PSTR("---"));
@@ -157,6 +182,7 @@ void setup() {
 #endif
 	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
+	intervals.create(50L,new GestureWake());
 }
 
 void recordTimestamp() {
@@ -192,27 +218,27 @@ void loop() {
 //	recordTimestamp();
 	intervals.check();
 	
-	// Check the gesture status every 100 cycles.
+//	// Check the gesture status every 100 cycles.
 	bool asleep = Hardware.isSleeping();
-	if (cycle > 1000000) {
-		int currentGesture = gesture.evaluate();
-		if (asleep && (currentGesture == 1)) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("waking from gesture"));
-#endif
-			Hardware.wake();
-			cycle = 0;
-			Appregistry.getCurrentApp()->setup();
-			Appregistry.getCurrentApp()->display();
-		}
-		if (!asleep && (currentGesture == 2)) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("sleeping from gesture"));
-#endif
-//			Hardware.sleep();
-			cycle = 0;
-		}
-	}
+//	if (cycle > 1000000) {
+//		int currentGesture = gesture.evaluate();
+//		if (asleep && (currentGesture == 1)) {
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//			Serial.println(PSTR("waking from gesture"));
+//#endif
+//			Hardware.wake();
+//			cycle = 0;
+//			Appregistry.getCurrentApp()->setup();
+//			Appregistry.getCurrentApp()->display();
+//		}
+//		if (!asleep && (currentGesture == 2)) {
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//			Serial.println(PSTR("sleeping from gesture"));
+//#endif
+////			Hardware.sleep();
+//			cycle = 0;
+//		}
+//	}
 
 	boolean istouched = Touchscreen.touched();
 	if (istouched && cycle > TOUCH_DELAY) {

@@ -50,7 +50,7 @@ extern ILI9341_t3 Graphics;
 #define LED0_PIN 20
 #define LED1_PIN 21
 #define VOLTAGE 0 // actually A0. This is the battery voltage measure pin 14
-#define PULSE_PIN 17 // move this to 17 (A3)
+#define PULSE_PIN 17 // pin 17 (A3)
 #define LED_CONTROL_PIN 3 // controls the LED brightness & power to compass and HRM
 
 #define HEADER_PIXEL(data,pixel) {\
