@@ -53,6 +53,21 @@ public:
 	}
 	virtual ~GestureWake(){};
 };
+class HardwareSleep : public Action {
+public:
+	HardwareSleep(){};
+	virtual const char* getName() {return PSTR("MaxCycle");};
+	virtual void execute() {
+#ifdef VORTEXMANIPULATOR_DEBUG
+		Serial.println(PSTR("sleep"));
+#endif
+		Hardware.sleep();
+		cycle = 0; // if we get here then start again.
+		Appregistry.getCurrentApp()->setup();
+		Appregistry.getCurrentApp()->display();
+	}
+	virtual ~HardwareSleep(){};
+};
 
 TS_Point convertPoint(TS_Point p,uint8_t rotation) {
 //#ifdef VORTEXMANIPULATOR_DEBUG
@@ -183,6 +198,7 @@ void setup() {
 	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
 	intervals.create(50L,new GestureWake());
+	intervals.create(new IntervalCycle(MAX_CYCLE,new HardwareSleep()));
 }
 
 void recordTimestamp() {
@@ -281,6 +297,7 @@ void loop() {
 			return;
 		}
 	}
+	// refresh the current app if its update interval was reached.
 	unsigned long m = micros();
 	if ((m-lastEventMicros) > Appregistry.getCurrentApp()->getUpdateInterval()) {
 		if (!asleep) {
@@ -289,15 +306,15 @@ void loop() {
 		lastEventMicros = m;
 	}
 	// if we pass max cycles then invoke the shutdown.
-	if (cycle > MAX_CYCLE) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println(PSTR("sleep"));
-#endif
-		Hardware.sleep();
-		cycle = 0; // if we get here then start again.
-		Appregistry.getCurrentApp()->setup();
-		Appregistry.getCurrentApp()->display();
-	}
+//	if (cycle > MAX_CYCLE) {
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//		Serial.println(PSTR("sleep"));
+//#endif
+//		Hardware.sleep();
+//		cycle = 0; // if we get here then start again.
+//		Appregistry.getCurrentApp()->setup();
+//		Appregistry.getCurrentApp()->display();
+//	}
 	delay(LOOP_DELAY);
 }
 #ifdef __cplusplus
