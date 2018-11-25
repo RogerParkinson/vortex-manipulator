@@ -18,17 +18,34 @@ public:
 };
 
 class Interval {
+public:
+//	Interval(long limit, Action *action);
+	virtual void check(long currentTime);
+	virtual ~Interval(){};
+};
+
+class IntervalCycle: public Interval {
+private:
+	long m_cycleLimit;
+	long m_cycle;
+	Action *m_action;
+
+public:
+	IntervalCycle(long limit, Action *action);
+	virtual void check(long currentTime);
+//	virtual ~IntervalCycle(){};
+};
+
+class IntervalMillis: public Interval {
 private:
 	Action *m_action;
 	long m_timeInterval;
 	long m_triggerTime;
-	static Interval *m_intervals[10];
-	static int m_intervalCount;
 
 public:
-	Interval(long millis, Action *action);
-	void check(long currentTime);
-	virtual ~Interval();
+	IntervalMillis(long limit, Action *action);
+	virtual void check(long currentTime);
+//	virtual ~IntervalMillis(){};
 };
 
 class Intervals {
@@ -47,7 +64,10 @@ public:
 		}
 	}
 	void create(long millis, Action *action) {
-		Interval *interval = new Interval(millis,action);
+		Interval *interval = new IntervalMillis(millis,action);
+		create(interval);
+	}
+	void create(Interval *interval) {
 		m_intervals[m_intervalCount++] = interval;
 	}
 	virtual ~Intervals(){};
