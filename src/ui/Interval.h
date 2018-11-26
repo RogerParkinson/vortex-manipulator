@@ -9,6 +9,8 @@
 #define INTERVAL_H_
 #include "Arduino.h"
 
+#define INTERVAL_DEBUG
+
 class Action {
 public:
 	Action(){};
@@ -55,6 +57,10 @@ public:
 	Intervals(){};
 	void check() {
 		long currentTime = millis();
+#ifdef INTERVAL_DEBUG
+		Serial.print("Intervals::check ");
+		Serial.println(m_intervalCount);
+#endif
 		for (int i=0;i<m_intervalCount;i++) {
 			m_intervals[i]->check(currentTime);
 		}

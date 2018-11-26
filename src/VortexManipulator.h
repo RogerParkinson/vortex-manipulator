@@ -15,7 +15,7 @@
 #include "ui/Startup.h"
 
 #define VORTEXMANIPULATOR_DEBUG
-//#define TOUCH_DEBUG
+#define TOUCH_DEBUG
 //#define RUN_STARTUP
 #define LOOP_DELAY 5
 #define MAX_CYCLE 32000/LOOP_DELAY //32000/LOOP_DELAY

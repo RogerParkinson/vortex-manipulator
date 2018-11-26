@@ -35,7 +35,13 @@ IntervalMillis::IntervalMillis(long limit, Action *action) {
 
 void IntervalMillis::check(long currentTime) {
 	if (m_triggerTime < currentTime) {
+#ifdef INTERVAL_DEBUG
+		Serial.println("IntervalMillis::check executing");
+#endif
 		m_action->execute();
+#ifdef INTERVAL_DEBUG
+		Serial.println("IntervalMillis::check executing done");
+#endif
 		m_triggerTime = currentTime + m_timeInterval;
 	}
 }

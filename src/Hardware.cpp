@@ -217,13 +217,13 @@ void Hardware_::compass(bool start)
 #endif
 }
 LSM303::vector<int16_t> Hardware_::getAccelerometerValues() {
-//#ifdef HARDWARE_DEBUG
-//	Serial.println(PSTR("getAccelerometerValues()..."));
-//#endif
+#ifdef HARDWARE_DEBUG
+	Serial.println(PSTR("getAccelerometerValues()..."));
+#endif
 	m_lsm303.read();
-//#ifdef HARDWARE_DEBUG
-//	Serial.println(PSTR("getAccelerometerValues() done"));
-//#endif
+#ifdef HARDWARE_DEBUG
+	Serial.println(PSTR("getAccelerometerValues() done"));
+#endif
 	return m_lsm303.a;
 }
 

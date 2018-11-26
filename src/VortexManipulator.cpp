@@ -37,8 +37,17 @@ public:
 	GestureWake(){};
 	virtual const char* getName() {return PSTR("GestureWake");};
 	virtual boolean execute() {
+#ifdef VORTEXMANIPULATOR_DEBUG
+		Serial.println(PSTR("GestureWake::execute #1"));
+#endif
 		int currentGesture = gesture.evaluate();
+#ifdef VORTEXMANIPULATOR_DEBUG
+		Serial.println(PSTR("GestureWake::execute #2"));
+#endif
 		bool asleep = Hardware.isSleeping();
+#ifdef VORTEXMANIPULATOR_DEBUG
+		Serial.println(PSTR("GestureWake::execute #3"));
+#endif
 		if (asleep && (currentGesture == 1)) {
 #ifdef VORTEXMANIPULATOR_DEBUG
 			Serial.println(PSTR("waking from gesture"));
@@ -55,6 +64,9 @@ public:
 			Hardware.sleep();
 			return true;
 		}
+#ifdef VORTEXMANIPULATOR_DEBUG
+		Serial.println(PSTR("GestureWake::execute #4"));
+#endif
 		return false;
 	}
 	virtual ~GestureWake(){};
@@ -117,9 +129,15 @@ public:
 	TouchDelay(){};
 	virtual const char* getName() {return PSTR("TouchDelay");};
 	virtual boolean execute() {
+#ifdef VORTEXMANIPULATOR_DEBUG
+		Serial.println(PSTR("TouchDelay::execute"));
+#endif
 		boolean istouched = Touchscreen.touched();
 		bool asleep = Hardware.isSleeping();
 		if (istouched) {
+#ifdef VORTEXMANIPULATOR_DEBUG
+			Serial.println(PSTR("TouchDelay::execute istouched=true"));
+#endif
 			if (asleep) {
 	#ifdef VORTEXMANIPULATOR_DEBUG
 				Serial.println(PSTR("waking from touch"));
@@ -130,7 +148,10 @@ public:
 				lastEventMicros = micros();
 			}
 			intervalHardwareSleep->reset();
-			cycle = 0; // Ensure we don't sleep if we are operating.
+#ifdef VORTEXMANIPULATOR_DEBUG
+			Serial.println(PSTR("reset done"));
+#endif
+//			cycle = 0; // Ensure we don't sleep if we are operating.
 			uint8_t rotation = Graphics.getRotation();
 			TS_Point lastPoint = convertPoint(Touchscreen.getPoint(),rotation);
 	#ifdef TOUCH_DEBUG
@@ -220,13 +241,12 @@ void setup() {
 	Serial.println("end of setup");
 	Serial.read();
 #endif
-	intervals.create(10L,new HRAction()); // 10 milliseconds
+//	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
-	intervals.create(50L,new GestureWake());
+//	intervals.create(50L,new GestureWake());
 	intervalHardwareSleep = new IntervalCycle(MAX_CYCLE,new HardwareSleep());
 	intervals.create(intervalHardwareSleep);
 	intervals.create(new IntervalCycle(TOUCH_DELAY,new TouchDelay()));
-
 }
 
 void recordTimestamp() {
@@ -274,7 +294,7 @@ void loop() {
 	}
 	delay(LOOP_DELAY);
 }
-#ifdef __cplusplus
+#ifdef __cplusplusINTERVAL_DEBUG
 int main(void) {
 	_init_Teensyduino_internal_();
 

@@ -10,9 +10,22 @@
 
 int Gesture::evaluate() {
 
+#ifdef GESTURE_DEBUG
+	Serial.println("Gesture::evaluate");
+#endif
 	LSM303::vector<int16_t> v = Hardware.getAccelerometerValues();
-	if (isEqual(v, buf_[head_]))
+#ifdef GESTURE_DEBUG
+	Serial.println("got LSM303");
+#endif
+	if (isEqual(v, buf_[head_])) {
+#ifdef GESTURE_DEBUG
+		Serial.println("isequal true");
+#endif
 		return 0;
+	}
+#ifdef GESTURE_DEBUG
+		Serial.println("isequal false");
+#endif
     buf_[head_] = v;
     entries++;
     if (entries >= BUF_SIZE) {
@@ -24,9 +37,9 @@ int Gesture::evaluate() {
     {
         tail_ = (tail_ + 1) % BUF_SIZE;
     }
-//	dump();
 	if (entries == BUF_SIZE) {
 #ifdef GESTURE_DEBUG
+		dump();
 //		Serial.print("head ");
 //		Serial.print(buf_[head_].z);
 //		Serial.print(" tail ");
@@ -79,6 +92,7 @@ bool Gesture::isEqual(int a1, int a2) {
 	return false;
 }
 void Gesture::dump() {
+#ifdef GESTURE_DEBUG
 	Serial.println("buffer dump");
 	size_t i = tail_;
 	for (size_t j=0; j < entries; j++) {
@@ -89,6 +103,7 @@ void Gesture::dump() {
 	Serial.println("end buffer dump");
 	Serial.print("head=");
 	Serial.println(head_);
+#endif
 }
 
 void Gesture::dump(LSM303::vector<int16_t> val) {

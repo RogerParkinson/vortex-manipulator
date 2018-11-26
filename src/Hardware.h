@@ -22,7 +22,7 @@
 //#include "CircularBuffer.h"
 #include "ui/Startup.h"
 
-//#define HARDWARE_DEBUG
+#define HARDWARE_DEBUG
 #define ICON_DEBUG
 #define TS_CS 8
 #define TIRQ_PIN  2
