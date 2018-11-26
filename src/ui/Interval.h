@@ -13,13 +13,12 @@ class Action {
 public:
 	Action(){};
 	virtual const char* getName() {return PSTR("Action");};
-	virtual void execute();
+	virtual boolean execute();
 	virtual ~Action(){};
 };
 
 class Interval {
 public:
-//	Interval(long limit, Action *action);
 	virtual void check(long currentTime);
 	virtual ~Interval(){};
 };
@@ -33,7 +32,7 @@ private:
 public:
 	IntervalCycle(long limit, Action *action);
 	virtual void check(long currentTime);
-//	virtual ~IntervalCycle(){};
+	virtual void reset();
 };
 
 class IntervalMillis: public Interval {
@@ -45,7 +44,6 @@ private:
 public:
 	IntervalMillis(long limit, Action *action);
 	virtual void check(long currentTime);
-//	virtual ~IntervalMillis(){};
 };
 
 class Intervals {
@@ -56,8 +54,6 @@ private:
 public:
 	Intervals(){};
 	void check() {
-//		Serial.print("Intervals::check m_intervalCount ");
-//		Serial.println(m_intervalCount);
 		long currentTime = millis();
 		for (int i=0;i<m_intervalCount;i++) {
 			m_intervals[i]->check(currentTime);

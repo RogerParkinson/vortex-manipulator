@@ -7,13 +7,15 @@ IntervalTimer hrTimer;
 IntervalTimer logTimer;
 String command;
 Intervals intervals;
+IntervalCycle *intervalHardwareSleep;
 
 class HRAction : public Action {
 public:
 	HRAction(){};
 	virtual const char* getName() {return PSTR("HRAction");};
-	virtual void execute() {
+	virtual boolean execute() {
 		heartRateInterrupt.calculate(0);
+		return true;
 	}
 	virtual ~HRAction(){};
 };
@@ -21,10 +23,11 @@ class HRLogAction : public Action {
 public:
 	HRLogAction(){};
 	virtual const char* getName() {return PSTR("HRLogAction");};
-	virtual void execute() {
+	virtual boolean execute() {
 		Serial.print("firing ");
 		Serial.println(getName());
 		heartRateInterrupt.log();
+		return true;
 	}
 	virtual ~HRLogAction(){};
 };
@@ -33,7 +36,7 @@ class GestureWake : public Action {
 public:
 	GestureWake(){};
 	virtual const char* getName() {return PSTR("GestureWake");};
-	virtual void execute() {
+	virtual boolean execute() {
 		int currentGesture = gesture.evaluate();
 		bool asleep = Hardware.isSleeping();
 		if (asleep && (currentGesture == 1)) {
@@ -43,21 +46,24 @@ public:
 			Hardware.wake();
 			Appregistry.getCurrentApp()->setup();
 			Appregistry.getCurrentApp()->display();
+			return true;
 		}
 		if (!asleep && (currentGesture == 2)) {
 #ifdef VORTEXMANIPULATOR_DEBUG
 			Serial.println(PSTR("sleeping from gesture"));
 #endif
 			Hardware.sleep();
+			return true;
 		}
+		return false;
 	}
 	virtual ~GestureWake(){};
 };
 class HardwareSleep : public Action {
 public:
 	HardwareSleep(){};
-	virtual const char* getName() {return PSTR("MaxCycle");};
-	virtual void execute() {
+	virtual const char* getName() {return PSTR("HardwareSleep");};
+	virtual boolean execute() {
 #ifdef VORTEXMANIPULATOR_DEBUG
 		Serial.println(PSTR("sleep"));
 #endif
@@ -65,22 +71,13 @@ public:
 		cycle = 0; // if we get here then start again.
 		Appregistry.getCurrentApp()->setup();
 		Appregistry.getCurrentApp()->display();
+		return true;
 	}
 	virtual ~HardwareSleep(){};
 };
-
-TS_Point convertPoint(TS_Point p,uint8_t rotation) {
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Serial.println(PSTR("---"));
-//		Serial.print(PSTR("loop:touch(raw) "));
-//		Serial.print(p.x);
-//		Serial.print(BLANK);
-//		Serial.print(p.y);
-//		Serial.print(BLANK);
-//		Serial.print(p.z);
-//		Serial.print(PSTR(" rotation: "));
-//		Serial.println(rotation);
-//#endif
+class TouchDelay: public Action {
+private:
+	TS_Point convertPoint(TS_Point p,uint8_t rotation) {
 		int x = 0;
 		int y = 0;
 
@@ -97,54 +94,82 @@ TS_Point convertPoint(TS_Point p,uint8_t rotation) {
 			// TODO:
 			break;
 		case 3:
-		    y = map(p.y, TS_MINY, TS_MAXY, Graphics.height(), 0 );
-		    x = map(p.x, TS_MINX, TS_MAXX, Graphics.width(), 0 );
+			y = map(p.y, TS_MINY, TS_MAXY, Graphics.height(), 0 );
+			x = map(p.x, TS_MINX, TS_MAXX, Graphics.width(), 0 );
 			break;
 		}
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Graphics.fillRect(0,0,Graphics.width(),10,BLACK);
-//		Graphics.setCursor(0,0);
-//		Graphics.print(PSTR("raw "));
-//		Graphics.print(p.x);
-//		Graphics.print(BLANK);
-//		Graphics.print(p.y);
-//		Graphics.print(PSTR(" adj "));
-//		Graphics.print(x);
-//		Graphics.print(BLANK);
-//		Graphics.print(y);
-//		Graphics.print(PSTR(" w: "));
-//		Graphics.print(Graphics.width());
-//		Graphics.print(PSTR(" h: "));
-//		Graphics.print(Graphics.height());
-//		Graphics.print(PSTR(" r: "));
-//		Graphics.print(rotation);
-////		Graphics.drawPixel(x, y, YELLOW);
-//#endif
 		p.x = x;
 		p.y = y;
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Serial.print(PSTR("loop:touch(revised) "));
-//		Serial.print(p.x);
-//		Serial.print(BLANK);
-//		Serial.println(p.y);
-//#endif
-	return p;
-}
-boolean isLandingPad(TS_Point p, uint8_t rotation) {
-	switch (rotation) {
-	case 0:
-		return p.y < LANDING_PAD;
-	case 3:
-		return p.x < LANDING_PAD;
-	default:
+		return p;
+	}
+	boolean isLandingPad(TS_Point p, uint8_t rotation) {
+		switch (rotation) {
+		case 0:
+			return p.y < LANDING_PAD;
+		case 3:
+			return p.x < LANDING_PAD;
+		default:
+			return false;
+		}
+	}
+
+public:
+	TouchDelay(){};
+	virtual const char* getName() {return PSTR("TouchDelay");};
+	virtual boolean execute() {
+		boolean istouched = Touchscreen.touched();
+		bool asleep = Hardware.isSleeping();
+		if (istouched) {
+			if (asleep) {
+	#ifdef VORTEXMANIPULATOR_DEBUG
+				Serial.println(PSTR("waking from touch"));
+	#endif
+				Hardware.wake();
+				Appregistry.getCurrentApp()->setup();
+				Appregistry.getCurrentApp()->display();
+				lastEventMicros = micros();
+			}
+			intervalHardwareSleep->reset();
+			cycle = 0; // Ensure we don't sleep if we are operating.
+			uint8_t rotation = Graphics.getRotation();
+			TS_Point lastPoint = convertPoint(Touchscreen.getPoint(),rotation);
+	#ifdef TOUCH_DEBUG
+			Serial.print("r = ");
+			Serial.print(rotation);
+			Serial.print(" x = ");
+			Serial.print(lastPoint.x);
+			Serial.print(" y = ");
+			Serial.print(lastPoint.y);
+			Serial.print(" z = ");
+			Serial.println(lastPoint.z);
+	#endif
+			if (isLandingPad(lastPoint,rotation)) {
+	#ifdef VORTEXMANIPULATOR_DEBUG
+				Serial.println(PSTR("(main)Switching to menu"));
+	#endif
+				Graphics.setRotation(3);
+				Appregistry.jumpToMenu();
+				return true;
+			}
+	#ifdef VORTEXMANIPULATOR_DEBUG
+			Serial.print(PSTR("invoking app "));
+			Serial.println(Appregistry.getCurrentApp()->getName());
+	#endif
+			if (!Appregistry.getCurrentApp()->touch(lastPoint)) {
+				Appregistry.jumpToMenu();
+				return true;
+			}
+			return true;
+		}
 		return false;
 	}
-}
+	virtual ~TouchDelay(){};
+};
 
 /*
   SerialEvent occurs whenever a new data comes in the hardware serial RX. This
   routine is run between each time loop() runs, so using delay inside loop can
-  delay response. Multiple bytes of data maynow() be available.
+  delay response. Multiple bytes of data may now be available.
 */
 char buffer[1000];
 void serialEvent() {
@@ -198,7 +223,10 @@ void setup() {
 	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
 	intervals.create(50L,new GestureWake());
-	intervals.create(new IntervalCycle(MAX_CYCLE,new HardwareSleep()));
+	intervalHardwareSleep = new IntervalCycle(MAX_CYCLE,new HardwareSleep());
+	intervals.create(intervalHardwareSleep);
+	intervals.create(new IntervalCycle(TOUCH_DELAY,new TouchDelay()));
+
 }
 
 void recordTimestamp() {
@@ -230,73 +258,12 @@ void recordTimestamp() {
 }
 
 void loop() {
-	cycle++;
 //	recordTimestamp();
 	intervals.check();
 	
 //	// Check the gesture status every 100 cycles.
 	bool asleep = Hardware.isSleeping();
-//	if (cycle > 1000000) {
-//		int currentGesture = gesture.evaluate();
-//		if (asleep && (currentGesture == 1)) {
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//			Serial.println(PSTR("waking from gesture"));
-//#endif
-//			Hardware.wake();
-//			cycle = 0;
-//			Appregistry.getCurrentApp()->setup();
-//			Appregistry.getCurrentApp()->display();
-//		}
-//		if (!asleep && (currentGesture == 2)) {
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//			Serial.println(PSTR("sleeping from gesture"));
-//#endif
-////			Hardware.sleep();
-//			cycle = 0;
-//		}
-//	}
 
-	boolean istouched = Touchscreen.touched();
-	if (istouched && cycle > TOUCH_DELAY) {
-		if (asleep) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("waking from touch"));
-#endif
-			Hardware.wake();
-			Appregistry.getCurrentApp()->setup();
-			Appregistry.getCurrentApp()->display();
-			lastEventMicros = micros();
-		}
-		cycle = 0; // Ensure we don't sleep if we are operating.
-		uint8_t rotation = Graphics.getRotation();
-		TS_Point lastPoint = convertPoint(Touchscreen.getPoint(),rotation);
-#ifdef TOUCH_DEBUG
-		Serial.print("r = ");
-		Serial.print(rotation);
-		Serial.print(" x = ");
-		Serial.print(lastPoint.x);
-		Serial.print(" y = ");
-		Serial.print(lastPoint.y);
-		Serial.print(" z = ");
-		Serial.println(lastPoint.z);
-#endif
-		if (isLandingPad(lastPoint,rotation)) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("(main)Switching to menu"));
-#endif
-			Graphics.setRotation(3);
-			Appregistry.jumpToMenu();
-			return;
-		}
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.print(PSTR("invoking app "));
-		Serial.println(Appregistry.getCurrentApp()->getName());
-#endif
-		if (!Appregistry.getCurrentApp()->touch(lastPoint)) {
-			Appregistry.jumpToMenu();
-			return;
-		}
-	}
 	// refresh the current app if its update interval was reached.
 	unsigned long m = micros();
 	if ((m-lastEventMicros) > Appregistry.getCurrentApp()->getUpdateInterval()) {
@@ -305,16 +272,6 @@ void loop() {
 		}
 		lastEventMicros = m;
 	}
-	// if we pass max cycles then invoke the shutdown.
-//	if (cycle > MAX_CYCLE) {
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Serial.println(PSTR("sleep"));
-//#endif
-//		Hardware.sleep();
-//		cycle = 0; // if we get here then start again.
-//		Appregistry.getCurrentApp()->setup();
-//		Appregistry.getCurrentApp()->display();
-//	}
 	delay(LOOP_DELAY);
 }
 #ifdef __cplusplus

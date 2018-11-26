@@ -81,13 +81,15 @@ void Dalek::display() {
 		circleSize = 1;
 		int x = Hardware.getAccelerometerValues().x;
 		int deltaX = abs(x-lastx);
-	Serial.print(PSTR("Dalek display"));
-	Serial.print(PSTR(" x="));
-	Serial.print(x);
-	Serial.print(PSTR(" deltaX="));
-	Serial.print(deltaX);
-	Serial.print(PSTR(" SENSITIVITY="));
-	Serial.println(SENSITIVITY);
+#ifdef DEBUG_DALEK
+		Serial.print(PSTR("Dalek display"));
+		Serial.print(PSTR(" x="));
+		Serial.print(x);
+		Serial.print(PSTR(" deltaX="));
+		Serial.print(deltaX);
+		Serial.print(PSTR(" SENSITIVITY="));
+		Serial.println(SENSITIVITY);
+#endif
 		lastx = x;
 		// if the x axis has moved then attempt to generate a dalek in one of the free slots
 		if (deltaX > SENSITIVITY) {
