@@ -10,7 +10,7 @@
 
 #include "../AppRegistry.h"
 #include <LSM303.h>
-#define GESTURE_DEBUG
+//#define GESTURE_DEBUG
 
 #define BUF_SIZE 10
 #define THRESHOLD 1000

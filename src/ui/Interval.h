@@ -9,7 +9,7 @@
 #define INTERVAL_H_
 #include "Arduino.h"
 
-#define INTERVAL_DEBUG
+//#define INTERVAL_DEBUG
 
 class Action {
 public:

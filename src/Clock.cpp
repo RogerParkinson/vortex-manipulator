@@ -61,6 +61,7 @@ void Clock::setup() {
 	Graphics.setRotation(3);
 	m_buttonOn->draw();
 	m_buttonOff->draw();
+	m_buttonMars->draw();
 }
 
 void Clock::close() {
