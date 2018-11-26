@@ -82,6 +82,11 @@ boolean Clock::touch(TS_Point p) {
 		m_buttonOff->flash();
 		m_noise = true;
 	}
+	else if (m_buttonMars->isClicked(p)) {
+		Serial.println(PSTR("clock::touch toggling Mars"));
+		m_buttonMars->flash();
+		m_mars = !m_mars;
+	}
 #ifdef CLOCK_DEBUG
 	Serial.print(PSTR("clock::touch m_noise="));
 	Serial.println(m_noise);
@@ -102,11 +107,31 @@ void Clock::display() {
 	Graphics.setFont(Arial_20);
 
 	long adjustedDate = now();
+	if (m_mars) {
+		// display mars time
+		float JDUT = 2440587.5+(adjustedDate/SECONDS_PER_DAY);
+		float JDTT = JDUT +(37+32.184)/86400;
+		float deltaTJ2000 = JDTT - 2451545.0;
+		float msd = (((deltaTJ2000 - 4.5)/1.027491252)+44796.0-0.00096);
 
-	Graphics.println(Hardware.timeString(adjustedDate));
-	Graphics.setCursor(50,100);
-	Graphics.println(Hardware.dateString(adjustedDate));
-	Graphics.setFont(Hardware.getDefaultFont());
+		int mtcHours = ((int)(24 * msd)) % 24;
+		int mtcMins = ((int)(24*60*msd)) % 60;
+		int mtcSeconds = ((int)(24*60*60*msd)) % 60;
+		Graphics.print(mtcHours);
+		Graphics.print(":");
+		Graphics.print(mtcMins);
+		Graphics.print(":");
+		Graphics.print(mtcSeconds);
+		Graphics.setCursor(50,100);
+		Graphics.println(msd);
+		Graphics.setFont(Hardware.getDefaultFont());
+	} else {
+		// Earth time
+		Graphics.println(Hardware.timeString(adjustedDate));
+		Graphics.setCursor(50,100);
+		Graphics.println(Hardware.dateString(adjustedDate));
+		Graphics.setFont(Hardware.getDefaultFont());
+	}
 }
 
 Clock::~Clock() {

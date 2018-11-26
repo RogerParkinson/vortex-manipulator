@@ -10,6 +10,8 @@
 #include "AppRegistry.h"
 #include "ui/Button.h"
 //#define CLOCK_DEBUG
+#define TAI_MINUS_UTC 32.184
+#define SECONDS_PER_DAY 8.64E7
 
 class Clock : public App {
 private:
