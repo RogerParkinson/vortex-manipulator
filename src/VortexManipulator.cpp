@@ -241,9 +241,9 @@ void setup() {
 	Serial.println("end of setup");
 	Serial.read();
 #endif
-//	intervals.create(10L,new HRAction()); // 10 milliseconds
+	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
-//	intervals.create(50L,new GestureWake());
+	intervals.create(50L,new GestureWake());
 	intervalHardwareSleep = new IntervalCycle(MAX_CYCLE,new HardwareSleep());
 	intervals.create(intervalHardwareSleep);
 	intervals.create(new IntervalCycle(TOUCH_DELAY,new TouchDelay()));
