@@ -37,36 +37,36 @@ public:
 	GestureWake(){};
 	virtual const char* getName() {return PSTR("GestureWake");};
 	virtual boolean execute() {
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println(PSTR("GestureWake::execute #1"));
-#endif
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//		Serial.println(PSTR("GestureWake::execute #1"));
+//#endif
 		int currentGesture = gesture.evaluate();
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println(PSTR("GestureWake::execute #2"));
-#endif
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//		Serial.println(PSTR("GestureWake::execute #2"));
+//#endif
 		bool asleep = Hardware.isSleeping();
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println(PSTR("GestureWake::execute #3"));
-#endif
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//		Serial.println(PSTR("GestureWake::execute #3"));
+//#endif
 		if (asleep && (currentGesture == 1)) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("waking from gesture"));
-#endif
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//			Serial.println(PSTR("waking from gesture"));
+//#endif
 			Hardware.wake();
 			Appregistry.getCurrentApp()->setup();
 			Appregistry.getCurrentApp()->display();
 			return true;
 		}
 		if (!asleep && (currentGesture == 2)) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println(PSTR("sleeping from gesture"));
-#endif
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//			Serial.println(PSTR("sleeping from gesture"));
+//#endif
 			Hardware.sleep();
 			return true;
 		}
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println(PSTR("GestureWake::execute #4"));
-#endif
+//#ifdef VORTEXMANIPULATOR_DEBUG
+//		Serial.println(PSTR("GestureWake::execute #4"));
+//#endif
 		return false;
 	}
 	virtual ~GestureWake(){};
@@ -129,17 +129,17 @@ public:
 	TouchDelay(){};
 	virtual const char* getName() {return PSTR("TouchDelay");};
 	virtual boolean execute() {
-#ifdef VORTEXMANIPULATOR_DEBUG
+#ifdef TOUCH_DEBUG
 		Serial.println(PSTR("TouchDelay::execute"));
 #endif
 		boolean istouched = Touchscreen.touched();
 		bool asleep = Hardware.isSleeping();
 		if (istouched) {
-#ifdef VORTEXMANIPULATOR_DEBUG
+#ifdef TOUCH_DEBUG
 			Serial.println(PSTR("TouchDelay::execute istouched=true"));
 #endif
 			if (asleep) {
-	#ifdef VORTEXMANIPULATOR_DEBUG
+	#ifdef TOUCH_DEBUG
 				Serial.println(PSTR("waking from touch"));
 	#endif
 				Hardware.wake();
@@ -148,7 +148,7 @@ public:
 				lastEventMicros = micros();
 			}
 			intervalHardwareSleep->reset();
-#ifdef VORTEXMANIPULATOR_DEBUG
+#ifdef TOUCH_DEBUG
 			Serial.println(PSTR("reset done"));
 #endif
 			uint8_t rotation = Graphics.getRotation();
@@ -164,14 +164,14 @@ public:
 			Serial.println(lastPoint.z);
 	#endif
 			if (isLandingPad(lastPoint,rotation)) {
-	#ifdef VORTEXMANIPULATOR_DEBUG
+	#ifdef TOUCH_DEBUG
 				Serial.println(PSTR("(main)Switching to menu"));
 	#endif
 				Graphics.setRotation(3);
 				Appregistry.jumpToMenu();
 				return true;
 			}
-	#ifdef VORTEXMANIPULATOR_DEBUG
+	#ifdef TOUCH_DEBUG
 			Serial.print(PSTR("invoking app "));
 			Serial.println(Appregistry.getCurrentApp()->getName());
 	#endif
@@ -194,6 +194,11 @@ public:
 		if (buffer == NULL) {
 			return true;
 		}
+#ifdef VORTEXMANIPULATOR_DEBUG
+		Serial.print(PSTR("from bluetooth ["));
+		Serial.print(buffer);
+		Serial.println(PSTR("]"));
+#endif
 		App *notification = Appregistry.getApp("Notification");
 		Notification *n = (Notification *)notification;
 		n->addMessage(buffer);

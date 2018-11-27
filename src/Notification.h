@@ -26,7 +26,8 @@ public:
 	};
 	NotificationInstance(const char *s, NotificationInstance *n) {
 		m_content = new String(s);
-		m_next = n;
+		n->m_next = this;
+		m_next = NULL;
 		m_timeStamp = now();
 	};
 	~NotificationInstance() {
@@ -38,11 +39,12 @@ class Notification : public App {
 private:
 	virtual void setup();
 	int count=0;
-	NotificationInstance *m_notificationInstance;
+	NotificationInstance *m_rootNotificationInstance;
 
 public:
 	Notification();
 	void deleteLastNotification(NotificationInstance *n);
+	virtual NotificationInstance *findLastNotification(NotificationInstance *n);
 	virtual unsigned long getUpdateInterval() {return 1000000UL;};
 	virtual void init();
 	virtual void display();

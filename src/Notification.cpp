@@ -41,7 +41,7 @@ const char *appname = PSTR("Notification");
 
 Notification::Notification(): App() {
 	// Keep the constructor empty and do most things in the init()
-	m_notificationInstance = NULL;
+	m_rootNotificationInstance = NULL;
 }
 void Notification::init() {
 #ifdef NOTIFICATION_DEBUG
@@ -49,7 +49,7 @@ void Notification::init() {
 #endif
 //	m_icon = new Icon(28,&Notification_bitmap[0]);
 	m_icon = new Icon(28,myicon);
-	m_notificationInstance = NULL;
+	m_rootNotificationInstance = NULL;
 	count=0;
 }
 const char* Notification::getName() {return appname;};
@@ -68,20 +68,20 @@ void Notification::setup() {
 	Graphics.setRotation(3);
 	Graphics.setTextSize(2);
 	Graphics.setCursor(0,0);
-	NotificationInstance *latest = m_notificationInstance;
+	NotificationInstance *n = m_rootNotificationInstance;
 	if (count == 0) {
 		Graphics.println("No notifications");
 		return;
 	}
 //	Graphics.print(count);
 //	Graphics.println(" notifications");
-	while (latest != NULL) {
+	while (n != NULL) {
 //#ifdef NOTIFICATION_DEBUG
 //		Serial.println(latest->m_content->c_str());
 //#endif
-		Graphics.printf(PSTR("%02d:%02d "),hour(latest->m_timeStamp),minute(latest->m_timeStamp));
-		Graphics.println(latest->m_content->c_str());
-		latest = latest->m_next;
+		Graphics.printf(PSTR("%02d:%02d "),hour(n->m_timeStamp),minute(n->m_timeStamp));
+		Graphics.println(n->m_content->c_str());
+		n = n->m_next;
 	}
 	m_icon->reverse(false);
 }
@@ -99,15 +99,23 @@ void Notification::addMessage(const char *s) {
 	Serial.print(s);
 	Serial.println("]");
 #endif
-	NotificationInstance *latest = new NotificationInstance(s,m_notificationInstance);
-	m_notificationInstance = latest;
+	NotificationInstance *latest;
+	if (m_rootNotificationInstance == NULL) {
+		m_rootNotificationInstance = new NotificationInstance(s);
+		latest = m_rootNotificationInstance;
+	} else {
+		NotificationInstance *n = findLastNotification(m_rootNotificationInstance);
+		latest = new NotificationInstance(s,n);
+	}
 	count++;
 	while (count > MAX_NOTIFICATIONS) {
-		deleteLastNotification(latest);
+		NotificationInstance *next = m_rootNotificationInstance->m_next;
+		delete m_rootNotificationInstance;
+		m_rootNotificationInstance = next;
 		count--;
 	}
 	m_icon->reverse(true);
-	Appregistry.getCurrentApp()->notify(s);
+	Appregistry.getCurrentApp()->notify(s);// This tells the menu to redraw (if the current app is the menu) most apps ignore notify().
 	Hardware.blink0();
 	Hardware.siren();
 };
@@ -133,7 +141,29 @@ void Notification::deleteLastNotification(NotificationInstance *n) {
 		deleteLastNotification(n->m_next);
 	}
 };
-
+NotificationInstance *Notification::findLastNotification(NotificationInstance *root) {
+#ifdef NOTIFICATION_DEBUG
+	Serial.println("Notification::findLastNotification...");
+#endif
+	if (root == NULL) {
+		return NULL;
+	}
+	if (root->m_next == NULL) {
+//#ifdef NOTIFICATION_DEBUG
+//		Serial.println("n->m_next == NULL");
+//#endif
+		return root;
+	}
+	if (root->m_next->m_next == NULL) {
+//#ifdef NOTIFICATION_DEBUG
+//		Serial.println("n->m_next->m_next == NULL");
+//#endif
+		// This is the last one
+		return root->m_next;
+	} else {
+		return findLastNotification(root->m_next);
+	}
+}
 
 void Notification::display() {
 }
