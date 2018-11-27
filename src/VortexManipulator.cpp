@@ -151,7 +151,6 @@ public:
 #ifdef VORTEXMANIPULATOR_DEBUG
 			Serial.println(PSTR("reset done"));
 #endif
-//			cycle = 0; // Ensure we don't sleep if we are operating.
 			uint8_t rotation = Graphics.getRotation();
 			TS_Point lastPoint = convertPoint(Touchscreen.getPoint(),rotation);
 	#ifdef TOUCH_DEBUG
@@ -186,35 +185,51 @@ public:
 	}
 	virtual ~TouchDelay(){};
 };
+class SerialCheck : public Action {
+public:
+	SerialCheck(){};
+	virtual const char* getName() {return PSTR("SerialCheck");};
+	virtual boolean execute() {
+		const char* buffer = Hardware.readBluetooth();
+		if (buffer == NULL) {
+			return true;
+		}
+		App *notification = Appregistry.getApp("Notification");
+		Notification *n = (Notification *)notification;
+		n->addMessage(buffer);
+		return true;
+	}
+	virtual ~SerialCheck(){};
+};
 
 /*
   SerialEvent occurs whenever a new data comes in the hardware serial RX. This
   routine is run between each time loop() runs, so using delay inside loop can
   delay response. Multiple bytes of data may now be available.
 */
-char buffer[1000];
-void serialEvent() {
-	  int i = 0;
-	  while(Serial.available()) buffer[i++] = Serial.read();
-	  buffer[i] = 0;
-	  Serial.print("serialEvent received: ");
-	  Serial.println(buffer);
-	  if (strcmp(&buffer[0],"GD")==0) {
-		Serial.print("gesture = ");
-		gesture.dump();
-		return;
-	  }
-	  if (strcmp(&buffer[0],"GC")==0) {
-		Serial.println("Gesture clear");
-		gesture.clear();
-		Serial.print("gesture = ");
-		gesture.dump();
-		return;
-	  }
-	  App *notification = Appregistry.getApp("Notification");
-	  Notification *n = (Notification *)notification;
-	  n->addMessage(buffer);
-}
+//char buffer[1000];
+//void serialEvent() {
+//	  int i = 0;
+//	  while(Serial.available()) buffer[i++] = Serial.read();
+//	  buffer[i] = 0;
+//	  Serial.print("serialEvent received: ");
+//	  Serial.println(buffer);
+//	  if (strcmp(&buffer[0],"GD")==0) {
+//		Serial.print("gesture = ");
+//		gesture.dump();
+//		return;
+//	  }
+//	  if (strcmp(&buffer[0],"GC")==0) {
+//		Serial.println("Gesture clear");
+//		gesture.clear();
+//		Serial.print("gesture = ");
+//		gesture.dump();
+//		return;
+//	  }
+//	  App *notification = Appregistry.getApp("Notification");
+//	  Notification *n = (Notification *)notification;
+//	  n->addMessage(buffer);
+//}
 void setup() {
 	setSyncProvider((getExternalTime)Teensy3Clock.get);
 	Serial.begin(9600);
@@ -244,6 +259,7 @@ void setup() {
 	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
 	intervals.create(50L,new GestureWake());
+	intervals.create(100L,new SerialCheck());
 	intervalHardwareSleep = new IntervalCycle(MAX_CYCLE,new HardwareSleep());
 	intervals.create(intervalHardwareSleep);
 	intervals.create(new IntervalCycle(TOUCH_DELAY,new TouchDelay()));

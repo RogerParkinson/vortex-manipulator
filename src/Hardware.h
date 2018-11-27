@@ -19,8 +19,8 @@
 #include <MAX30105.h>
 
 #include <heartRate.h>
-//#include "CircularBuffer.h"
 #include "ui/Startup.h"
+#include <SoftwareSerial.h>
 
 //#define HARDWARE_DEBUG
 #define ICON_DEBUG
@@ -59,6 +59,8 @@ pixel[1] = ((((data[1] - 33) & 0xF) << 4) | ((data[2] - 33) >> 2)); \
 pixel[2] = ((((data[2] - 33) & 0x3) << 6) | ((data[3] - 33))); \
 data += 4; \
 }
+#define bluetooth Serial1
+#define DSTRING_SIZE 60
 
 class Icon {
 public:
@@ -96,7 +98,7 @@ public:
 class Hardware_ {
 private:
 	LSM303 m_lsm303;
-	char dstring[20];
+	char dstring[DSTRING_SIZE];
 	bool m_sdOK=false;
 	TEENSY3_LP m_lowPower;
 	int m_compassCorrection;
@@ -151,6 +153,7 @@ public:
 	uint16_t read16(File f);
 	uint32_t read32(File f);
 	void bufferAccelerometer();
+	const char *readBluetooth();
 	virtual ~Hardware_();
 };
 

@@ -94,6 +94,11 @@ void Notification::notify(const char *s) {
 	setup();
 };
 void Notification::addMessage(const char *s) {
+#ifdef NOTIFICATION_DEBUG
+	Serial.print("Notification::addMessage...[");
+	Serial.print(s);
+	Serial.println("]");
+#endif
 	NotificationInstance *latest = new NotificationInstance(s,m_notificationInstance);
 	m_notificationInstance = latest;
 	count++;
@@ -109,18 +114,18 @@ void Notification::addMessage(const char *s) {
 
 void Notification::deleteLastNotification(NotificationInstance *n) {
 #ifdef NOTIFICATION_DEBUG
-	Serial.println("deleteLastNotification...");
+	Serial.println("Notification::deleteLastNotification...");
 #endif
 	if (n->m_next == NULL) {
-#ifdef NOTIFICATION_DEBUG
-		Serial.println("n->m_next == NULL");
-#endif
+//#ifdef NOTIFICATION_DEBUG
+//		Serial.println("n->m_next == NULL");
+//#endif
 		return;
 	}
 	if (n->m_next->m_next == NULL) {
-#ifdef NOTIFICATION_DEBUG
-		Serial.println("n->m_next->m_next == NULL");
-#endif
+//#ifdef NOTIFICATION_DEBUG
+//		Serial.println("n->m_next->m_next == NULL");
+//#endif
 		// This is the last one
 		delete n->m_next;
 		n->m_next = NULL;

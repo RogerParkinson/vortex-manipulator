@@ -9,7 +9,7 @@
 #define NOTIFICATION_H_
 #include "AppRegistry.h"
 #include "ui/Button.h"
-//#define NOTIFICATION_DEBUG
+#define NOTIFICATION_DEBUG
 #define MAX_NOTIFICATIONS 11
 
 

@@ -145,15 +145,29 @@ void Hardware_::init()
 	Serial.println(PSTR("tft done...."));
 #endif
 
+	// initialise bluetooth
+	bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
+	bluetooth.print("$");  // Print three times individually
+	bluetooth.print("$");
+	bluetooth.print("$");  // Enter command mode
+	delay(100);  // Short delay, wait for the Mate to send back CMD
+	bluetooth.println("U,9600,N");  // Temporarily Change the baudrate to 9600, no parity
+	// 115200 can be too fast at times for NewSoftSerial to relay the data reliably
+	bluetooth.begin(9600);  // Start bluetooth serial at 9600
+
 	if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {//Use default I2C port, 400kHz speed
 		Serial.println("MAX30105 was not found. Please check wiring/power. ");
 	} else {
+#ifdef HARDWARE_DEBUG
 		Serial.println(
 			"MAX30105 detected");
+#endif
 		particleSensor.setup(); //Configure sensor with default settings
 		particleSensor.setPulseAmplitudeRed(0x0A); //Turn Red LED to low to indicate sensor is running
 		particleSensor.setPulseAmplitudeGreen(0); //Turn off Green LED
 	}
+
+
 }
 
 void Hardware_::playTone(uint16_t frequency, uint32_t duration, uint32_t delay_after) {
@@ -283,6 +297,22 @@ const char *Hardware_::timeString(long adjustedDate) {
 }
 const char *Hardware_::dateString(long adjustedDate) {
 	sprintf(dstring, PSTR("%04d-%02d-%02d"),year(adjustedDate),month(adjustedDate),day(adjustedDate));
+	return dstring;
+}
+
+const char *Hardware_::readBluetooth() {
+	int i = 0;
+	while(bluetooth.available() && (i < DSTRING_SIZE-1)) {
+		char c = (char)bluetooth.read();
+		if (c == 13 || c == 10) {
+			break;
+		}
+		dstring[i++] = c;
+	}
+	if (i == 0) {
+		return NULL;
+	}
+	dstring[i] = 0;
 	return dstring;
 }
 

@@ -22,12 +22,16 @@ Configuration::Configuration() {
 void Configuration::load() {
 	File dataFile = SD.open(PSTR("hconfig.txt"));
 	if (dataFile) {
+#ifdef HARDWARE_DEBUG
 		Serial.println(PSTR("loading hconfig.txt"));
+#endif
 		m_timeZone = Hardware.readInt(dataFile);
 		m_lowPulse = Hardware.readInt(dataFile);
 		m_highPulse = Hardware.readInt(dataFile);
 		dataFile.close();
+#ifdef HARDWARE_DEBUG
 		Serial.println(PSTR("loaded hconfig.txt"));
+#endif
 	}
 	// if the file isn't open, pop up an error:
 	else {

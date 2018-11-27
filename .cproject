@@ -32,6 +32,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/LowPower_Teensy3/utility}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/LowPower_Teensy3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/SoftwareSerial}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.cpp.sketch.input.1049104539" name="CPP source files" superClass="io.sloeber.compiler.cpp.sketch.input"/>
 							</tool>
@@ -50,6 +51,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/LowPower_Teensy3/utility}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/LowPower_Teensy3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/SoftwareSerial}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.c.sketch.input.2034263921" name="C Source Files" superClass="io.sloeber.compiler.c.sketch.input"/>
 							</tool>
@@ -68,6 +70,7 @@
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/SPI}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/LowPower_Teensy3/utility}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/LowPower_Teensy3}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/vortex_manipulator/libraries/SoftwareSerial}&quot;"/>
 								</option>
 								<inputType id="io.sloeber.compiler.S.sketch.input.492701582" name="Assembly source files" superClass="io.sloeber.compiler.S.sketch.input"/>
 							</tool>

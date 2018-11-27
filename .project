@@ -62,6 +62,11 @@
 			<location>/home/roger/Arduino/hardware/teensy/avr/libraries/SPI</location>
 		</link>
 		<link>
+			<name>libraries/SoftwareSerial</name>
+			<type>2</type>
+			<location>/home/roger/Arduino/hardware/teensy/avr/libraries/SoftwareSerial</location>
+		</link>
+		<link>
 			<name>libraries/SparkFun_MAX3010x_Pulse_and_Proximity_Sensor_Library</name>
 			<type>2</type>
 			<location>/home/roger/Arduino/libraries/SparkFun_MAX3010x_Pulse_and_Proximity_Sensor_Library</location>
