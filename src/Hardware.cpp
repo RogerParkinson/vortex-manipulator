@@ -147,13 +147,16 @@ void Hardware_::init()
 
 	// initialise bluetooth
 	bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
-	bluetooth.print("$");  // Print three times individually
-	bluetooth.print("$");
-	bluetooth.print("$");  // Enter command mode
-	delay(100);  // Short delay, wait for the Mate to send back CMD
-	bluetooth.println("U,9600,N");  // Temporarily Change the baudrate to 9600, no parity
-	// 115200 can be too fast at times for NewSoftSerial to relay the data reliably
-	bluetooth.begin(9600);  // Start bluetooth serial at 9600
+//	bluetooth.print("$");  // Print three times individually
+//	bluetooth.print("$");
+//	bluetooth.print("$");  // Enter command mode
+//	delay(100);  // Short delay, wait for the Mate to send back CMD
+//	bluetooth.println("U,9600,N");  // Temporarily Change the baudrate to 9600, no parity
+//	// 115200 can be too fast at times for NewSoftSerial to relay the data reliably
+//	bluetooth.begin(9600);  // Start bluetooth serial at 9600
+//	bluetooth.print("-");  // Print three times individually
+//	bluetooth.print("-");
+//	bluetooth.print("-");  // Exit command mode
 
 	if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {//Use default I2C port, 400kHz speed
 		Serial.println("MAX30105 was not found. Please check wiring/power. ");
