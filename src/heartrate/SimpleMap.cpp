@@ -60,14 +60,14 @@ void SimpleMap::purge() {
 }
 
 void SimpleMap::dump() {
-	Serial.print("number of nodes=");
-	Serial.println(m_count);
+//	Serial.print("number of nodes=");
+//	Serial.println(m_count);
 	Node *next = m_firstNode;
 	while (next != NULL) {
-		Serial.print("key,value=");
-		Serial.print(next->getKey());
-		Serial.print(",");
-		Serial.println(next->getValue());
+//		Serial.print("key,value=");
+//		Serial.print(next->getKey());
+//		Serial.print(",");
+//		Serial.println(next->getValue());
 		next = next->next();
 	}
 }

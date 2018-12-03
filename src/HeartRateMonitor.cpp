@@ -64,7 +64,7 @@ void HeartRateMonitor::setup() {
 	Graphics.setRotation(3);
 	Graphics.setTextSize(1);
 	Graphics.fillRect(0,0,Graphics.width(),Graphics.height(),WHITE);
-	Graphics.setCursor(120,100);
+	Graphics.setCursor(120,100); // needed?
 	m_lastX = 0;
 	m_effects = false;
 
@@ -138,9 +138,9 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 	}
 	logger->debug("m_lastMin=%d m_lastMax=%d bpm=%d m_lastScale=%d",m_lastMin,m_lastMax,bpm,m_lastScale);
 
-	Graphics.fillRect(0,0,150,100,WHITE);
-	Graphics.fillRect(0,100,Graphics.width(),Graphics.height()-100,WHITE);
-	Graphics.setCursor(10,20);
+	Graphics.fillRect(0,0,150,100,WHITE); // panel #1
+	Graphics.fillRect(0,100,Graphics.width(),Graphics.height()-100,WHITE); // panel #2
+	Graphics.setCursor(10,20);// panel #1
 	uint16_t colour = GREEN;
 	if (bpm < configuration.getLowPulse()) {
 		colour = BLUE;
@@ -152,14 +152,14 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 	Graphics.setTextSize(2);
 	Graphics.print("BPM: ");
 	Graphics.print(bpm);
-	Graphics.setCursor(10,40);
+	Graphics.setCursor(10,40);// panel #1
 	Graphics.print("INT: ");
 	if (interval > 0 && interval < 10000) {
 		int i = interval;
 		Graphics.print(i);
 	}
 #ifdef POINCARE
-	Graphics.drawRect(160, 0, 160, 100, BLACK);
+	Graphics.drawRect(160, 0, 160, 100, BLACK);// panel #3
 	for (int i=1;i<maxPoincare;i++) {
 		float i1 = poincare->get(i-1);
 		float i2 = poincare->get(i);

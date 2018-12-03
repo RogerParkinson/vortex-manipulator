@@ -10,6 +10,7 @@
 #include "AppRegistry.h"
 #include "heartrate/HeartRateInterrupt.h"
 #include "heartrate/SimpleMap.h"
+#include "ui/Panel.h"
 #include <cassert>
 
 //#define HEARTRATEMONITOR_DEBUG
@@ -38,6 +39,9 @@ private:
 	virtual void initaliseGraph(int bpm, float interval);
 	virtual void figureScale();
 	Logger *logger;
+	Panel panelText = Panel(0,0,150,100,WHITE);
+	Panel panelHR = Panel(0,100,Graphics.width(),Graphics.height()-100,WHITE);
+	Panel panelPoincare = Panel(160,0,160,100,WHITE);
 
 public:
 	HeartRateMonitor();
