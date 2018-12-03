@@ -137,7 +137,7 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 		Serial.println();
 	}
 #endif
-	logger->debug("m_lastMin=%d m_lastMax=%d bpm=%d m_lastScale=%d",m_lastMin,m_lastMax,bpm,m_lastScale);
+//	logger->debug("m_lastMin=%d m_lastMax=%d bpm=%d m_lastScale=%d",m_lastMin,m_lastMax,bpm,m_lastScale);
 
 	panelText.clear(BLACK);
 	panelHR.clear();
@@ -163,27 +163,34 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 		Graphics.print(i);
 	}
 #ifdef POINCARE
-	Graphics.drawRect(160, 0, 160, 100, BLACK);// panel #3
+	panelPoincare.clear(BLACK);
+	m_map->purge();
+//	Graphics.drawRect(160, 0, 160, 100, BLACK);// panel #3
 	for (int i=1;i<maxPoincare;i++) {
 		float i1 = poincare->get(i-1);
 		float i2 = poincare->get(i);
-		volatile int y = (i1-800)*0.04;
-		volatile int x = 160+((i2-800)*0.025);
+		if (i1 > 2000 || i2 > 2000) {
+			continue;
+		}
+		volatile int y = (i1-800)*0.162;
+		volatile int x = ((i2-800)*0.095);
 		long key = (x*10000)+y;
 		int colour = BLACK;
 		if (key > 0) {
 			int frequency = m_map->put(key);
-			if (frequency < 20) {
+			if (frequency < 2) {
 				colour = BLUE;
-			} else if (frequency < 50) {
+			} else if (frequency < 5) {
 				colour = GREEN;
-			} else if (frequency < 80) {
+			} else if (frequency < 8) {
 				colour = YELLOW;
 			} else {
 				colour = RED;
 			}
 		}
-		Graphics.fillCircle(constrain(x,0,320),constrain(y,0,240),2,colour);
+//		Graphics.fillCircle(constrain(x,0,320),constrain(y,0,240),2,colour);
+		panelPoincare.fillCircle(x, y, 2, colour);
+//		logger->debug("x=%d y=%d colour=%d",x,y,colour);
 	}
 #endif
 }

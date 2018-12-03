@@ -15,9 +15,7 @@
 #define SLOPE 8
 #define HIGH_CUTOFF 510
 #define LOW_CUTOFF 480
-#define POINCARE_SIZE 50
-//#define HEARTRATEINTERRUPT_DEBUG
-
+#define POINCARE_SIZE 100
 
 // Assign human-readable names to some common 16-bit color values:
 #define	BLACK   0x0000
