@@ -9,8 +9,6 @@
 #define GRAPHICTEST_H_
 #include "AppRegistry.h"
 
-//#define GRAPHICSTEST_DEBUG
-
 class GraphicTest : public App {
 private:
 	unsigned long testFillScreen();

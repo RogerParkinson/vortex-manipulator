@@ -37,6 +37,11 @@
 			<location>/home/roger/Arduino/hardware/teensy/avr/cores/teensy3</location>
 		</link>
 		<link>
+			<name>libraries/ArduinoLogger</name>
+			<type>2</type>
+			<location>/home/roger/Arduino/libraries/ArduinoLogger</location>
+		</link>
+		<link>
 			<name>libraries/ILI9341_t3</name>
 			<type>2</type>
 			<location>/home/roger/Arduino/hardware/teensy/avr/libraries/ILI9341_t3</location>

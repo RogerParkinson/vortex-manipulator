@@ -31,6 +31,7 @@ private:
 	virtual void setup();
 	File m_root;
 	char m_lastName[20];
+	Logger *logger;
 
 public:
 	Gallery();

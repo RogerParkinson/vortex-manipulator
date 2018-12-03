@@ -10,7 +10,6 @@
 #include "AppRegistry.h"
 #include "ui/Button.h"
 #include "ui/Incrementor.h"
-//#define SETCLOCK_DEBUG
 
 class SetClock : public App {
 private:

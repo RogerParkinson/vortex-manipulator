@@ -39,12 +39,9 @@ static uint16_t myicon[] PROGMEM = {
 
 Gallery::Gallery() :
 		App() {
-	// Keep the constructor empty and do most things in the init()
+	logger = loggerFactory.getLogger("Gallery");
 }
 void Gallery::init() {
-#ifdef GALLERY_DEBUG
-	Serial.print(getName());Serial.println(INIT);
-#endif
 	m_icon = new Icon(28, myicon);
 }
 void Gallery::setup() {
@@ -55,9 +52,7 @@ void Gallery::setup() {
 	}
 	m_root = SD.open(PSTR("/"));
 	if (!m_root) {
-#ifdef GALLERY_DEBUG
-		Serial.println(PSTR("Gallery::setup() failed to open root"));
-#endif
+		logger->error("failed to open root");
 		return;
 	}
 	m_root.rewindDirectory();
@@ -84,47 +79,27 @@ char *Gallery::findNextFile() {
 		File entry = m_root.openNextFile();
 		if (!entry) {
 			// no more files
-#ifdef GALLERY_DEBUG
-			Serial.println(PSTR("Gallery::findNextFile: no more files"));
-#endif
+			logger->error("no more files");
 			break;
 		}
 		if (entry.isDirectory()) {
-#ifdef GALLERY_DEBUG
-			Serial.print(PSTR("Gallery::findNextFile:#3 "));
-			Serial.println(entry.name());
-#endif
 			entry.close();
 			continue;
 		}
 		char *pch = NULL;
-#ifdef GALLERY_DEBUG
-		Serial.print(PSTR("Gallery::findNextFile:#1 "));
-		Serial.println(entry.name());
-#endif
 		pch = strstr (entry.name(),".BMP");
 		if (pch == NULL) {
 			pch = strstr (entry.name(),".TFT");
 		}
 		if (pch != NULL) {
-#ifdef GALLERY_DEBUG
-			Serial.println(entry.name());
-			Serial.print(PSTR("Gallery::findNextFile: selected: "));
-			Serial.println(entry.name());
-#endif
+			logger->debug("%s selected",entry.name());
 			strcpy(m_lastName,entry.name());
 			entry.close();
 			return &m_lastName[0];
 		}
-#ifdef GALLERY_DEBUG
-		Serial.print(PSTR("Gallery::findNextFile:#2 "));
-		Serial.println(entry.name());
-#endif
 		entry.close();
 	}
-#ifdef GALLERY_DEBUG
-	Serial.println(PSTR("Gallery::findNextFile: failed to find a file"));
-#endif
+	logger->error("failed to find a file");
 	return NULL;
 }
 
@@ -150,37 +125,32 @@ void Gallery::imgDraw(char *filename, int x, int y) {
 
 	  if((x >= Graphics.width()) || (y >= Graphics.height())) return;
 
-	  Serial.println();
-	  Serial.print(F("Loading image '"));
-	  Serial.print(filename);
-	  Serial.println('\'');
+	  logger->debug("loading image [%s]",filename);
 
 	  // Open requested file on SD card
 	  if (!(bmpFile = SD.open(filename))) {
-	    Serial.print(F("File not found"));
+		  logger->error("File not found [%s]",filename);
 	    return;
 	  }
 
 	  // Parse BMP header
 	  if(Hardware.read16(bmpFile) == 0x4D42) { // BMP signature
-	    Serial.print(F("File size: ")); Serial.println(Hardware.read32(bmpFile));
+		logger->debug("File size: %d",Hardware.read32(bmpFile));
 	    (void)Hardware.read32(bmpFile); // Read & ignore creator bytes
 	    bmpImageoffset = Hardware.read32(bmpFile); // Start of image data
-	    Serial.print(F("Image Offset: ")); Serial.println(bmpImageoffset, DEC);
+	    logger->debug("Image Offset: %d",bmpImageoffset);
 	    // Read DIB header
-	    Serial.print(F("Header size: ")); Serial.println(Hardware.read32(bmpFile));
+	    logger->debug("Header size: %d",Hardware.read32(bmpFile));
 	    bmpWidth  = Hardware.read32(bmpFile);
 	    bmpHeight = Hardware.read32(bmpFile);
 	    if(Hardware.read16(bmpFile) == 1) { // # planes -- must be '1'
 	      bmpDepth = Hardware.read16(bmpFile); // bits per pixel
-	      Serial.print(F("Bit Depth: ")); Serial.println(bmpDepth);
+	      logger->debug("Bit Depth: %d",bmpDepth);
+
 	      if((bmpDepth == 24) && (Hardware.read32(bmpFile) == 0)) { // 0 = uncompressed
 
 	        goodBmp = true; // Supported BMP format -- proceed!
-	        Serial.print(F("Image size: "));
-	        Serial.print(bmpWidth);
-	        Serial.print('x');
-	        Serial.println(bmpHeight);
+	        logger->debug("Image size %d %d",bmpWidth,bmpHeight);
 
 	        // BMP rows are padded (if needed) to 4-byte boundary
 	        rowSize = (bmpWidth * 3 + 3) & ~3;
@@ -230,15 +200,15 @@ void Gallery::imgDraw(char *filename, int x, int y) {
 	          } // end pixel
 	          Graphics.writeRect(0, row, w, 1, awColors);
 	        } // end scanline
-	        Serial.print(F("Loaded in "));
-	        Serial.print(millis() - startTime);
-	        Serial.println(" ms");
+	        logger->debug("Loaded in %d ms",millis() - startTime);
 	      } // end goodBmp
 	    }
 	  }
 
 	  bmpFile.close();
-	  if(!goodBmp) Serial.println(F("BMP format not recognized."));
+	  if(!goodBmp) {
+		  logger->error("BMP format not recognized.");
+	  }
 }
 
 Gallery::~Gallery() {

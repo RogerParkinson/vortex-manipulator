@@ -8,6 +8,7 @@
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
 #define VERSION "1.53"
+#include <Logger.h>
 
 
 class Configuration {
@@ -15,6 +16,7 @@ private:
 	int m_timeZone;
 	int m_lowPulse;
 	int m_highPulse;
+	Logger *loggerHardware;
 public:
 	Configuration();
 	void load();

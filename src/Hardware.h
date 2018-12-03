@@ -21,6 +21,7 @@
 #include <heartRate.h>
 #include "ui/Startup.h"
 #include <SoftwareSerial.h>
+#include <Logger.h>
 
 //#define HARDWARE_DEBUG
 #define ICON_DEBUG
@@ -97,6 +98,7 @@ public:
 
 class Hardware_ {
 private:
+	Logger *loggerHardware;
 	LSM303 m_lsm303;
 	char dstring[DSTRING_SIZE];
 	bool m_sdOK=false;

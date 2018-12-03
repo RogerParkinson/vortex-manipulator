@@ -42,11 +42,10 @@ const char *appname = PSTR("Notification");
 Notification::Notification(): App() {
 	// Keep the constructor empty and do most things in the init()
 	m_rootNotificationInstance = NULL;
+	loggerNotification = loggerFactory.getLogger(appname);
 }
 void Notification::init() {
-#ifdef NOTIFICATION_DEBUG
-	Serial.println(PSTR("Notification::init()"));
-#endif
+	loggerNotification->debug("init()");
 //	m_icon = new Icon(28,&Notification_bitmap[0]);
 	m_icon = new Icon(28,myicon);
 	m_rootNotificationInstance = NULL;
@@ -55,15 +54,10 @@ void Notification::init() {
 const char* Notification::getName() {return appname;};
 
 void Notification::setup() {
-#ifdef NOTIFICATION_DEBUG
-	Serial.println(PSTR("Notification::setup()"));
-#endif
+	loggerNotification->debug("setup()");
 	Graphics.fillScreen(BLACK);
 	Graphics.setRotation(3);
 	Graphics.setCursor(0,Graphics.height()-10);
-//#ifdef NOTIFICATION_DEBUG
-//		Serial.println("Displaying notifications...");
-//#endif
 	Graphics.fillScreen(BLACK);
 	Graphics.setRotation(3);
 	Graphics.setTextSize(2);
@@ -73,12 +67,7 @@ void Notification::setup() {
 		Graphics.println("No notifications");
 		return;
 	}
-//	Graphics.print(count);
-//	Graphics.println(" notifications");
 	while (n != NULL) {
-//#ifdef NOTIFICATION_DEBUG
-//		Serial.println(latest->m_content->c_str());
-//#endif
 		Graphics.printf(PSTR("%02d:%02d "),hour(n->m_timeStamp),minute(n->m_timeStamp));
 		Graphics.println(n->m_content->c_str());
 		n = n->m_next;
@@ -94,11 +83,7 @@ void Notification::notify(const char *s) {
 	setup();
 };
 void Notification::addMessage(const char *s) {
-#ifdef NOTIFICATION_DEBUG
-	Serial.print("Notification::addMessage...[");
-	Serial.print(s);
-	Serial.println("]");
-#endif
+	loggerNotification->debug("addMessage...[%s]",s);
 	NotificationInstance *latest;
 	if (m_rootNotificationInstance == NULL) {
 		m_rootNotificationInstance = new NotificationInstance(s);
@@ -121,19 +106,11 @@ void Notification::addMessage(const char *s) {
 };
 
 void Notification::deleteLastNotification(NotificationInstance *n) {
-#ifdef NOTIFICATION_DEBUG
-	Serial.println("Notification::deleteLastNotification...");
-#endif
+	loggerNotification->debug("deleteLastNotification...");
 	if (n->m_next == NULL) {
-//#ifdef NOTIFICATION_DEBUG
-//		Serial.println("n->m_next == NULL");
-//#endif
 		return;
 	}
 	if (n->m_next->m_next == NULL) {
-//#ifdef NOTIFICATION_DEBUG
-//		Serial.println("n->m_next->m_next == NULL");
-//#endif
 		// This is the last one
 		delete n->m_next;
 		n->m_next = NULL;
@@ -149,15 +126,9 @@ NotificationInstance *Notification::findLastNotification(NotificationInstance *r
 		return NULL;
 	}
 	if (root->m_next == NULL) {
-//#ifdef NOTIFICATION_DEBUG
-//		Serial.println("n->m_next == NULL");
-//#endif
 		return root;
 	}
 	if (root->m_next->m_next == NULL) {
-//#ifdef NOTIFICATION_DEBUG
-//		Serial.println("n->m_next->m_next == NULL");
-//#endif
 		// This is the last one
 		return root->m_next;
 	} else {

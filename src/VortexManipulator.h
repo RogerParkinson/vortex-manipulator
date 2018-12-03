@@ -13,8 +13,9 @@
 #include "ui/Gesture.h"
 #include "ui/Interval.h"
 #include "ui/Startup.h"
+#include <Logger.h>
 
-#define VORTEXMANIPULATOR_DEBUG
+//#define VORTEXMANIPULATOR_DEBUG
 //#define TOUCH_DEBUG
 //#define RUN_STARTUP
 #define LOOP_DELAY 5

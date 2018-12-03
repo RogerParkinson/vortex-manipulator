@@ -10,7 +10,6 @@
 
 #include "AppRegistry.h"
 
-//#define DEBUG_DALEK
 #define RADIUS 16
 #define DALEK_COUNT 5
 #define SENSITIVITY 100
@@ -68,6 +67,8 @@ private:
 	int currentColour;
 	int lastx = 0;
 	Icon m_smallIcon = Icon(14,smallDalek);
+	Logger *logger;
+
 
 public:
 	Dalek();

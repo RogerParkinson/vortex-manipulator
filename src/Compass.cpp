@@ -48,9 +48,6 @@ Compass::Compass(): App() {
 	last_heading_radians = 0;
 }
 void Compass::init() {
-#ifdef COMPASS_DEBUG
-	Serial.print(getName());Serial.println(INIT);
-#endif
 	m_icon = new Icon(28,myicon);
 	m_height = Graphics.height();
 	m_width = Graphics.width();

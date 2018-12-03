@@ -45,11 +45,9 @@ Dalek::Dalek() {
 	m_height = Graphics.height();
 	m_cy = Graphics.height() / 2;
 	m_cx = Graphics.width() / 2;
+	logger = loggerFactory.getLogger("Dalek");
 }
 void Dalek::init() {
-#ifdef DEBUG_DALEK
-	Serial.print(getName());Serial.println(INIT);
-#endif
 	m_icon = new Icon(28,myicon);
 	m_height = Graphics.height();
 	m_width = Graphics.width();
@@ -59,9 +57,6 @@ void Dalek::init() {
 	circleSize = 1;
 }
 void Dalek::setup() {
-#ifdef DEBUG_DALEK
-	Serial.println(PSTR("Dalek setup"));
-#endif
 	Graphics.fillScreen(BLACK);
 	Graphics.setRotation(0);
 	Graphics.setCursor(0,0);
@@ -81,15 +76,7 @@ void Dalek::display() {
 		circleSize = 1;
 		int x = Hardware.getAccelerometerValues().x;
 		int deltaX = abs(x-lastx);
-#ifdef DEBUG_DALEK
-		Serial.print(PSTR("Dalek display"));
-		Serial.print(PSTR(" x="));
-		Serial.print(x);
-		Serial.print(PSTR(" deltaX="));
-		Serial.print(deltaX);
-		Serial.print(PSTR(" SENSITIVITY="));
-		Serial.println(SENSITIVITY);
-#endif
+		logger->debug("Dalek display x=%d deltax=%d sensitivity=%d",x,deltaX,SENSITIVITY);
 		lastx = x;
 		// if the x axis has moved then attempt to generate a dalek in one of the free slots
 		if (deltaX > SENSITIVITY) {
@@ -121,10 +108,7 @@ void Dalek::display() {
 		if (dalekCounter > 0) {
 			Hardware.siren();
 		}
-#ifdef DEBUG_DALEK
-		Serial.print(PSTR("dalekCounter "));
-		Serial.println(dalekCounter);
-#endif
+		logger->debug("dalekCounter=%d",dalekCounter);
 	}
 	Graphics.drawCircle(m_cx,m_cy,RADIUS*circleSize,currentColour);
 }

@@ -41,14 +41,8 @@ void GraphicTest::init() {
 	m_icon = new Icon(28,myicon);
 }
 void GraphicTest::print(long l) {
-#ifdef GRAPHICSTEST_DEBUG
-	Serial.println(l);
-#endif
 }
 void GraphicTest::print(const char *str) {
-#ifdef GRAPHICSTEST_DEBUG
-	Hardware.progmemPrint(str);
-#endif
 }
 void GraphicTest::display() {
 	print(testFillScreen());

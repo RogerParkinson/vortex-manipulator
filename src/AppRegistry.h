@@ -9,11 +9,14 @@
 #define APPREGISTRY_H_
 
 #include "App.h"
+#include <Logger.h>
+
 #define MAX_APPS 10
 //#define DEBUG_APPREGISTRY
 
 class AppRegistry {
 private:
+	Logger *loggerAppRegistry;
 	int count=0;
 	App *apps[MAX_APPS];
 	App *currentApp=NULL;
@@ -29,23 +32,15 @@ public:
 			return; // do nothing if we are already there
 		}
 		currentApp = app;
-#ifdef DEBUG_APPREGISTRY
-		Serial.print(PSTR("AppRegistry: switching to: "));
-		Serial.println(app->getName());
-#endif
+		loggerAppRegistry->debug(PSTR("switching to: %s"),app->getName());
 		app->setup();
-#ifdef DEBUG_APPREGISTRY
-		Serial.print(PSTR("AppRegistry: setup complete for "));
-		Serial.println(app->getName());
-#endif
+		loggerAppRegistry->debug(PSTR("setup complete for: %s"),app->getName());
 	};
 	const char* getMenuName() {
 		return m_menuName;
 	}
 	void jumpToMenu() {
-#ifdef DEBUG_APPREGISTRY
-		Serial.println(PSTR("AppRegistry: jump to menu"));
-#endif
+		loggerAppRegistry->debug(PSTR("AppRegistry: jump to menu"));
 		if (currentApp != NULL) {
 			if (strcmp(currentApp->getName(),m_menuName)==0) {
 				return; // already on the menu

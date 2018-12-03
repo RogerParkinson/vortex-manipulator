@@ -41,22 +41,12 @@ Clock::Clock(): App() {
 	// Keep the constructor empty and do most things in the init()
 }
 void Clock::init() {
-#ifdef CLOCK_DEBUG
-	Serial.println("Clock::init()");
-#endif
 	m_noise = false;
 	m_icon = new Icon(28,myicon);
 	m_timeZone = configuration.getTimeZone();
-#ifdef CLOCK_DEBUG
-	Serial.print("m_timeZone=");
-	Serial.println(m_timeZone);
-#endif
 }
 
 void Clock::setup() {
-#ifdef CLOCK_DEBUG
-	Serial.println("Clock::setup()");
-#endif
 	Graphics.fillScreen(BLACK);
 	Graphics.setRotation(3);
 	m_buttonOn->draw();
@@ -65,37 +55,26 @@ void Clock::setup() {
 }
 
 void Clock::close() {
-#ifdef CLOCK_DEBUG
-	Serial.println(PSTR("Clock::close()"));
-#endif
 	m_noise = false;
 }
 
 boolean Clock::touch(TS_Point p) {
 	if (m_buttonOn->isClicked(p)) {
-		Serial.println(PSTR("clock::touch turning off noise"));
 		m_buttonOn->flash();
 		m_noise = false;
 	}
 	else if (m_buttonOff->isClicked(p)) {
-		Serial.println(PSTR("clock::touch turning on noise"));
 		m_buttonOff->flash();
 		m_noise = true;
 	}
 	else if (m_buttonMars->isClicked(p)) {
-		Serial.println(PSTR("clock::touch toggling Mars"));
 		m_buttonMars->flash();
 		m_mars = !m_mars;
 	}
-#ifdef CLOCK_DEBUG
-	Serial.print(PSTR("clock::touch m_noise="));
-	Serial.println(m_noise);
-#endif
 	return true;
 }
 void Clock::display() {
 	if (m_noise) {
-		Serial.println(PSTR("clock::noise"));
 		Hardware.playTone(3136,30,40);
 		Hardware.playTone(4186,30,9);
 		Hardware.blink1();

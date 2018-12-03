@@ -22,6 +22,7 @@ XPT2046_Touchscreen Touchscreen = XPT2046_Touchscreen(TS_CS,TIRQ_PIN);
 
 
 Hardware_::Hardware_() {
+	loggerHardware = loggerFactory.getLogger("Hardware");
 	m_lsm303 = LSM303();
 	// Calibration values. Use the Calibrate example program to get the values for
 	// your compass.
@@ -55,9 +56,7 @@ void Hardware_::shutdown() {
 	delay(1000);
 	Graphics.fillScreen(BLACK);
 	heartRateInterrupt.reset();
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("sleeping...."));
-#endif
+	loggerHardware->debug("shutdown...");
 	compass(false);
 	Graphics.sleep(true);
 	digitalWrite(LED_CONTROL_PIN, LOW);
@@ -70,10 +69,8 @@ void Hardware_::shutdown() {
 	Graphics.sleep(false);
 	Graphics.begin();
 	Graphics.fillScreen(BLACK);
-#ifdef HARDWARE_DEBUG
 	Serial.begin(9600);
-	Serial.println(PSTR("waking...."));
-#endif
+	loggerHardware->debug("starting up after shutdown...");
 	setSyncProvider((getExternalTime)Teensy3Clock.get); // resync the clock when we wake up
 	//Teensy3Clock.compensate(0);
 	startup.run();
@@ -84,9 +81,7 @@ void Hardware_::shutdown() {
  */
 void Hardware_::sleep() {
 
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("dozing...."));
-#endif
+	loggerHardware->debug("sleep...");
 	compass(false);
 	Graphics.sleep(true);
 	digitalWrite(LED_CONTROL_PIN, LOW); // this also turns off HR
@@ -107,10 +102,7 @@ void Hardware_::wake() {
 	blink1();
 	Graphics.sleep(false);
 	Graphics.begin();
-#ifdef HARDWARE_DEBUG
-	Serial.begin(9600);
-	Serial.println(PSTR("waking...."));
-#endif
+	loggerHardware->debug("waking after sleep...");
 	setSyncProvider((getExternalTime)Teensy3Clock.get); // resync the clock when we wake up
 	//Teensy3Clock.compensate(0);
 	sleeping = false;
@@ -125,25 +117,18 @@ void Hardware_::init()
 	digitalWrite(LED_CONTROL_PIN, HIGH);
 	Wire.begin();
 	beginSD();
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("starting LMS303"));
-#endif
+	loggerHardware->debug("starting LMS303");
 	m_lsm303.init();
 	m_lsm303.enableDefault();
 	compass(false);
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("LMS303 done"));
-#endif
+	loggerHardware->debug("LMS303 done");
 	Graphics.begin();
 	Graphics.fillScreen(BLACK);
 	Graphics.setFont(getDefaultFont());
 	Touchscreen.begin();
 	m_lowPower = TEENSY3_LP();
 	sleeping = false;
-
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("tft done...."));
-#endif
+	loggerHardware->debug("tft done");
 
 	// initialise bluetooth
 	bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
@@ -159,12 +144,9 @@ void Hardware_::init()
 //	bluetooth.print("-");  // Exit command mode
 
 	if (!particleSensor.begin(Wire, I2C_SPEED_FAST)) {//Use default I2C port, 400kHz speed
-		Serial.println("MAX30105 was not found. Please check wiring/power. ");
+		loggerHardware->error("MAX30105 was not found. Please check wiring/power. ");
 	} else {
-#ifdef HARDWARE_DEBUG
-		Serial.println(
-			"MAX30105 detected");
-#endif
+		loggerHardware->debug("MAX30105 detected");
 		particleSensor.setup(); //Configure sensor with default settings
 		particleSensor.setPulseAmplitudeRed(0x0A); //Turn Red LED to low to indicate sensor is running
 		particleSensor.setPulseAmplitudeGreen(0); //Turn off Green LED
@@ -174,17 +156,13 @@ void Hardware_::init()
 }
 
 void Hardware_::playTone(uint16_t frequency, uint32_t duration, uint32_t delay_after) {
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("tone"));
-#endif
+	loggerHardware->debug("tone");
 	tone(TONE_PIN, frequency,duration);
 	delay(delay_after);
 	noTone(TONE_PIN);
 }
 void Hardware_::siren() {
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("siren"));
-#endif
+	loggerHardware->debug("siren");
 	for (int i=0;i<10;i++) {
 		tone(TONE_PIN, 3136+(i*10),10);
 		delay(10);
@@ -192,10 +170,9 @@ void Hardware_::siren() {
 	noTone(TONE_PIN);
 }
 float Hardware_::getBatteryVoltage() {
-//#ifdef HARDWARE_DEBUG
-//	Serial.print("Raw voltage ");
-//	Serial.println(analogRead(VOLTAGE));
-//#endif
+	if (loggerHardware->isDebug()) {
+		loggerHardware->debug("Raw voltage  %d",analogRead(VOLTAGE));
+	}
 	return 0.106129032*analogRead(VOLTAGE);
 }
 
@@ -217,9 +194,7 @@ int Hardware_::compassHeading()
 }
 void Hardware_::compass(bool start)
 {
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("compass(bool start)..."));
-#endif
+	loggerHardware->debug("compass(%T)",start);
 	if (start) {
 		m_lsm303.enableDefault();
 	} else {
@@ -229,18 +204,12 @@ void Hardware_::compass(bool start)
 //		m_lsm303.writeAccReg(LSM303_CTRL_REG1_A, 0x00);
 
 	}
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("compass(bool start) done"));
-#endif
+	loggerHardware->debug("compass(%T) done",start);
 }
 LSM303::vector<int16_t> Hardware_::getAccelerometerValues() {
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("getAccelerometerValues()..."));
-#endif
+//	loggerHardware->debug("getAccelerometerValues()...");
 	m_lsm303.read();
-#ifdef HARDWARE_DEBUG
-	Serial.println(PSTR("getAccelerometerValues() done"));
-#endif
+//	loggerHardware->debug("getAccelerometerValues()...done");
 	return m_lsm303.a;
 }
 
@@ -321,14 +290,14 @@ const char *Hardware_::readBluetooth() {
 
 bool Hardware_::beginSD() {
 	m_sdOK = SD.begin(SD_CS);
-#ifdef HARDWARE_DEBUG
 	if (!m_sdOK) {
-		Serial.println(PSTR("SD initialization failed!"));
+		loggerHardware->error("SD initialization failed!");
 	} else {
-		Serial.println(PSTR("SD initialization done."));
-		dumpSD(PSTR("after SD init"));
+		loggerHardware->debug("SD initialization done");
+		if (loggerHardware->isDebug()) {
+			dumpSD(PSTR("after SD init"));
+		}
 	}
-#endif
 	return m_sdOK;
 }
 // These read 16- and 32-bit types from the SD card file.

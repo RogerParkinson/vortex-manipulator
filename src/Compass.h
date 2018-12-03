@@ -10,7 +10,6 @@
 #include "AppRegistry.h"
 #include <cassert>
 
-//#define COMPASS_DEBUG
 //#define ANGLE_CORRECTION	1200
 #define CIRCLE_PORTION	0.60
 #define ARROW_LENGTH 40

@@ -41,16 +41,10 @@ SetClock::SetClock(): App() {
 	// Keep the constructor empty and do most things in the init()
 }
 void SetClock::init() {
-#ifdef SETCLOCK_DEBUG
-	Serial.println(PSTR("SetClock::init()"));
-#endif
 	m_icon = new Icon(28,myicon);
 }
 
 void SetClock::setup() {
-#ifdef SETCLOCK_DEBUG
-	Serial.println(PSTR("SetClock::setup()"));
-#endif
 	Graphics.fillScreen(BLACK);
 	Graphics.setRotation(3);
 	long adjustedDate = now() + (m_timeZone * SECS_PER_HOUR);
@@ -73,9 +67,6 @@ void SetClock::drawDateButtons() {
 }
 
 void SetClock::close() {
-#ifdef SETCLOCK_DEBUG
-	Serial.println(PSTR("SetClock::close()"));
-#endif
 }
 
 boolean SetClock::touch(TS_Point p) {
@@ -102,16 +93,6 @@ void SetClock::setDateTime() {
 	Teensy3Clock.set(now());// - (m_timeZone * SECS_PER_HOUR));
 }
 void SetClock::display() {
-//	Graphics.fillRect(0,0,Graphics.width(),120,BLACK);
-//	Graphics.setCursor(60,50);
-//	Graphics.setTextColor(WHITE);
-//	Graphics.setTextSize(3);
-//
-//	long adjustedDate = now() + (m_timeZone * SECS_PER_HOUR);
-
-//	Graphics.println(Hardware.timeString(adjustedDate));
-//	Graphics.setCursor(50,100);
-//	Graphics.println(Hardware.dateString(adjustedDate));
 }
 
 SetClock::~SetClock() {

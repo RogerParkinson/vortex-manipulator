@@ -16,22 +16,19 @@ Configuration::Configuration() {
 
 	m_lowPulse = 40;
 	m_highPulse = 50;
-
+	loggerHardware = loggerFactory.getLogger("Hardware");
 }
 
 void Configuration::load() {
 	File dataFile = SD.open(PSTR("hconfig.txt"));
 	if (dataFile) {
-#ifdef HARDWARE_DEBUG
-		Serial.println(PSTR("loading hconfig.txt"));
-#endif
-		m_timeZone = Hardware.readInt(dataFile);
+		loggerHardware->debug("loading hconfig.txt");
+		m_timeZone = Hardware.readInt(dataFile);//#define COMPASS_DEBUG
+
 		m_lowPulse = Hardware.readInt(dataFile);
 		m_highPulse = Hardware.readInt(dataFile);
 		dataFile.close();
-#ifdef HARDWARE_DEBUG
-		Serial.println(PSTR("loaded hconfig.txt"));
-#endif
+		loggerHardware->debug("loaded hconfig.txt");
 	}
 	// if the file isn't open, pop up an error:
 	else {

@@ -9,12 +9,11 @@
 #define NOTIFICATION_H_
 #include "AppRegistry.h"
 #include "ui/Button.h"
-#define NOTIFICATION_DEBUG
+//#define NOTIFICATION_DEBUG
 #define MAX_NOTIFICATIONS 11
 
 
 class NotificationInstance {
-
 public:
 	NotificationInstance *m_next;
 	const String *m_content;
@@ -40,6 +39,7 @@ private:
 	virtual void setup();
 	int count=0;
 	NotificationInstance *m_rootNotificationInstance;
+	Logger *loggerNotification;
 
 public:
 	Notification();

@@ -20,6 +20,7 @@
 
 class Menu: public App {
 private:
+	Logger *logger;
 public:
 	Menu();
 	virtual void setup();

@@ -37,6 +37,7 @@ private:
 	SimpleMap *m_map;
 	virtual void initaliseGraph(int bpm, float interval);
 	virtual void figureScale();
+	Logger *logger;
 
 public:
 	HeartRateMonitor();

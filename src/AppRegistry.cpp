@@ -8,6 +8,7 @@
 #include "AppRegistry.h"
 
 AppRegistry::AppRegistry() {
+	loggerAppRegistry = loggerFactory.getLogger("AppRegistry");
 }
 
 void AppRegistry::registerApp(App *app) {
@@ -35,20 +36,11 @@ int AppRegistry::getAppCount() {
 	return count;
 }
 void AppRegistry::init() {
-#ifdef DEBUG_APPREGISTRY
-	Serial.print(PSTR("Count="));
-	Serial.println(count);
-#endif
+	loggerAppRegistry->debug("Count=%d\n",count);
 	for (int i=0;i<count;i++) {
-#ifdef DEBUG_APPREGISTRY
-		Serial.print("Starting...");
-		Serial.println(apps[i]->getName());
-#endif
+		loggerAppRegistry->debug("Starting...%s",apps[i]->getName());
 		apps[i]->init();
-#ifdef DEBUG_APPREGISTRY
-		Serial.print(apps[i]->getName());
-		Serial.println("...done");
-#endif
+		loggerAppRegistry->debug("%s...done",apps[i]->getName());
 	}
 	jumpToMenu();
 }

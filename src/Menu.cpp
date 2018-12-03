@@ -8,11 +8,10 @@
 #include "Menu.h"
 
 Menu::Menu() {
+	logger = loggerFactory.getLogger("Menu");
 }
 void Menu::init() {
-#ifdef DEBUG_MENU
-	Serial.print(getName());Serial.println(INIT);
-#endif
+	logger->debug("name %s %s",getName(),INIT);
 }
 void Menu::display() {
 	// dynamic display
@@ -65,23 +64,8 @@ void Menu::setup() {
 		if (icon != NULL) {
 			int icon_x = x+((w/2)-(icon->size)/2);
 			int icon_y = y-((icon->size)+5);
-#ifdef DEBUG_MENU
-			Serial.print(PSTR("icon "));
-			Serial.print(PSTR("size="));
-			Serial.print(icon->size);
-			Serial.print(PSTR(" row="));
-			Serial.print(row);
-			Serial.print(PSTR(" Graphics.height()="));
-			Serial.print(Graphics.height());
-			Serial.print(PSTR(" y="));
-			Serial.print(y);
-			Serial.print(PSTR(" x="));
-			Serial.print(icon_x);
-			Serial.print(PSTR(" y="));
-			Serial.print(icon_y);
-			Serial.print(BLANK);
-			Serial.println(app->getName());
-#endif
+			logger->debug("icon size=%d row=%d Graphics.height()=%d y=%d x=%d y=%d %s",
+					icon->size,row, Graphics.height(),y,icon_x,icon_y,app->getName());
 			icon->draw(icon_x,icon_y);
 		}
 		int x1 = OFFSET_COLUMN+column*Graphics.width()/MAX_COLUMN;
@@ -89,19 +73,19 @@ void Menu::setup() {
 		int y2 = 10+OFFSET_ROW+row*Graphics.height()/MAX_ROW;
 		int y1 = y2-45;
 		app->setMenuPos(x1, y1, x2, y2);
-#ifdef DEBUG_MENU
-		Graphics.drawRect(x1,y1,x2-x1,y2-y1,RED);
-		Graphics.setCursor(x,y+10);
-		Graphics.print("x1=");
-		Graphics.print(x1);
-		Graphics.print(" y1=");
-		Graphics.print(y1);
-		Graphics.setCursor(x,y+20);
-		Graphics.print("x2=");
-		Graphics.print(x2);
-		Graphics.print(" y2=");
-		Graphics.print(y2);
-#endif
+		if (logger->isDebug()) {
+			Graphics.drawRect(x1,y1,x2-x1,y2-y1,RED);
+			Graphics.setCursor(x,y+10);
+			Graphics.print("x1=");
+			Graphics.print(x1);
+			Graphics.print(" y1=");
+			Graphics.print(y1);
+			Graphics.setCursor(x,y+20);
+			Graphics.print("x2=");
+			Graphics.print(x2);
+			Graphics.print(" y2=");
+			Graphics.print(y2);
+		}
 		Graphics.setCursor(x,y);
 		Graphics.setTextColor(WHITE);
 		Graphics.print(app->getName());
@@ -113,36 +97,12 @@ void Menu::setup() {
 			column++;
 		}
 	}
-
 }
 boolean Menu::touch(TS_Point p) {
 
 	int row = 0;
 	int column = 0;
-
-#ifdef DEBUG_MENU
-//	Graphics.fillRect(0,0,Graphics.width(),10,BLACK);
-//	Graphics.setCursor(0,0);
-//	Graphics.print("touch ");
-//	Graphics.print(p.x);
-//	Graphics.print(" ");
-//	Graphics.print(p.y);
-//	Graphics.print("");
-//	Graphics.print(" width: ");
-//	Graphics.print(Graphics.width());
-//	Graphics.print(" height: ");
-//	Graphics.print(Graphics.height());
-
-	Serial.print(PSTR("menu::touch matching: "));
-	Serial.print(p.x);
-	Serial.print(BLANK);
-	Serial.println(p.y);
-//	Serial.print(NLL);
-//	Serial.print(PSTR(" width: "));
-//	Serial.print(Graphics.width());
-//	Serial.print(PSTR(" height: "));
-//	Serial.println(Graphics.height());
-#endif
+	logger->debug("menu::touch matching: %d %d ",p.x,p.y);
 
 	for (int i=0;i<Appregistry.getAppCount();i++) {
 		App *app = Appregistry.getApp(i);
@@ -154,14 +114,13 @@ boolean Menu::touch(TS_Point p) {
 		int y2 = 10+OFFSET_ROW+row*Graphics.height()/MAX_ROW;
 		int y1 = y2-30;
 		if (app->menuMatch(p)) {
-#ifdef DEBUG_MENU
-			Serial.print(app->getName());
-			Serial.println(MATCH);
-			Graphics.print(BLANK);
-			Graphics.print(app->getName());
-			Graphics.print(MATCH);
-			Graphics.drawPixel(p.x,p.y,YELLOW);
-#endif
+			logger->debug("%s %s",app->getName(),MATCH);
+			if (logger->isDebug()) {
+				Graphics.print(BLANK);
+				Graphics.print(app->getName());
+				Graphics.print(MATCH);
+				Graphics.drawPixel(p.x,p.y,YELLOW);
+			}
 			Appregistry.setCurrentApp(app);
 		}
 		if (column >= MAX_COLUMN-1) {

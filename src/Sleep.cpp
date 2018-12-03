@@ -41,16 +41,10 @@ Sleep::Sleep(): App() {
 	// Keep the constructor empty and do most things in the init()
 }
 void Sleep::init() {
-#ifdef Shutdown_DEBUG
-	Serial.println(PSTR("Sleep::init()"));
-#endif
 	m_icon = new Icon(28,myicon);
 }
 
 void Sleep::setup() {
-#ifdef Shutdown_DEBUG
-	Serial.println(PSTR("Sleep::setup()"));
-#endif
 	Graphics.fillScreen(BLACK);
 	Graphics.setRotation(3);
 	m_buttonShutdown->draw();
@@ -58,9 +52,6 @@ void Sleep::setup() {
 }
 
 void Sleep::close() {
-#ifdef Shutdown_DEBUG
-	Serial.println(PSTR("Sleep::close()"));
-#endif
 }
 
 boolean Sleep::touch(TS_Point p) {

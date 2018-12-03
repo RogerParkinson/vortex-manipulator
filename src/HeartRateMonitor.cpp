@@ -52,17 +52,10 @@ HeartRateMonitor::HeartRateMonitor(): App() {
 	m_lastScale = 0.1;
 	m_prevCount = 0;
 	m_prevPopulated = false;
+	logger = loggerFactory.getLogger("HRM");
 }
 void HeartRateMonitor::init() {
-#ifdef HEARTRATEMONITOR_DEBUG
-	Serial.print(getName());
-	Serial.println(INIT);
-	Serial.print("LowPulse=");
-	Serial.print(configuration.getLowPulse());
-	Serial.print(" HighPulse=");
-	Serial.println(configuration.getHighPulse());
-
-#endif
+	logger->debug("%s %s LowPulse=%d HighPulse=%d",getName(),INIT,configuration.getLowPulse(),configuration.getHighPulse());
 	m_icon = new Icon(28,myicon);
 	m_map = new SimpleMap();
 }
@@ -135,28 +128,16 @@ void HeartRateMonitor::display() {
 void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 	Poincare *poincare = heartRateInterrupt.getPoincare();
 	int maxPoincare = poincare->getMax();
+	if (logger->isDebug()) {
+		logger->debug("initaliseGraph maxPoincare=%d m_intervals",maxPoincare);
+		for (int i=0;i<maxPoincare;i++) {
+			Serial.print(poincare->get(i));
+			Serial.print(",");
+		}
+		Serial.println();
+	}
+	logger->debug("m_lastMin=%d m_lastMax=%d bpm=%d m_lastScale=%d",m_lastMin,m_lastMax,bpm,m_lastScale);
 
-#ifdef HEARTRATEMONITOR_DEBUG
-	Serial.print(getName());
-	Serial.println("::initaliseGraph");
-	Serial.print(" maxPoincare ");
-	Serial.print(maxPoincare);
-	Serial.print(" m_intervals ");
-	for (int i=0;i<maxPoincare;i++) {
-		Serial.print(poincare->get(i));
-		Serial.print(",");
-}
-
-//	Serial.print(" m_lastMin ");
-//	Serial.print(m_lastMin);
-//	Serial.print(" m_lastMax ");
-//	Serial.print(m_lastMax);
-//	Serial.print(" bpm ");
-//	Serial.print(bpm);
-//	Serial.print(" m_lastScale ");
-//	Serial.print(m_lastScale);
-	Serial.println();
-#endif
 	Graphics.fillRect(0,0,150,100,WHITE);
 	Graphics.fillRect(0,100,Graphics.width(),Graphics.height()-100,WHITE);
 	Graphics.setCursor(10,20);

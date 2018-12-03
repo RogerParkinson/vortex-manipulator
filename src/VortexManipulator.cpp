@@ -9,6 +9,11 @@ String command;
 Intervals intervals;
 IntervalCycle *intervalHardwareSleep;
 
+LoggerFactory loggerFactory = LoggerFactory(true);
+Logger *loggerVM;
+Logger *loggerTouch;
+Logger *loggerGesture;
+
 class HRAction : public Action {
 public:
 	HRAction(){};
@@ -37,36 +42,20 @@ public:
 	GestureWake(){};
 	virtual const char* getName() {return PSTR("GestureWake");};
 	virtual boolean execute() {
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Serial.println(PSTR("GestureWake::execute #1"));
-//#endif
 		int currentGesture = gesture.evaluate();
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Serial.println(PSTR("GestureWake::execute #2"));
-//#endif
 		bool asleep = Hardware.isSleeping();
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Serial.println(PSTR("GestureWake::execute #3"));
-//#endif
 		if (asleep && (currentGesture == 1)) {
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//			Serial.println(PSTR("waking from gesture"));
-//#endif
+			loggerGesture->debug(PSTR("waking from gesture"));
 			Hardware.wake();
 			Appregistry.getCurrentApp()->setup();
 			Appregistry.getCurrentApp()->display();
 			return true;
 		}
 		if (!asleep && (currentGesture == 2)) {
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//			Serial.println(PSTR("sleeping from gesture"));
-//#endif
+			loggerGesture->debug(PSTR("sleeping from gesture"));
 			Hardware.sleep();
 			return true;
 		}
-//#ifdef VORTEXMANIPULATOR_DEBUG
-//		Serial.println(PSTR("GestureWake::execute #4"));
-//#endif
 		return false;
 	}
 	virtual ~GestureWake(){};
@@ -76,9 +65,7 @@ public:
 	HardwareSleep(){};
 	virtual const char* getName() {return PSTR("HardwareSleep");};
 	virtual boolean execute() {
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println(PSTR("sleep"));
-#endif
+		loggerVM->debug(getName());
 		Hardware.sleep();
 		cycle = 0; // if we get here then start again.
 		Appregistry.getCurrentApp()->setup();
@@ -129,52 +116,30 @@ public:
 	TouchDelay(){};
 	virtual const char* getName() {return PSTR("TouchDelay");};
 	virtual boolean execute() {
-#ifdef TOUCH_DEBUG
-		Serial.println(PSTR("TouchDelay::execute"));
-#endif
+		loggerTouch->debug(getName());
 		boolean istouched = Touchscreen.touched();
 		bool asleep = Hardware.isSleeping();
 		if (istouched) {
-#ifdef TOUCH_DEBUG
-			Serial.println(PSTR("TouchDelay::execute istouched=true"));
-#endif
+			loggerTouch->debug("%s ::execute istouched=true",getName());
 			if (asleep) {
-	#ifdef TOUCH_DEBUG
-				Serial.println(PSTR("waking from touch"));
-	#endif
+				loggerTouch->debug("%s %s",getName(),PSTR("waking from touch"));
 				Hardware.wake();
 				Appregistry.getCurrentApp()->setup();
 				Appregistry.getCurrentApp()->display();
 				lastEventMicros = micros();
 			}
 			intervalHardwareSleep->reset();
-#ifdef TOUCH_DEBUG
-			Serial.println(PSTR("reset done"));
-#endif
+			loggerTouch->debug("%s %s",getName(),PSTR("reset done"));
 			uint8_t rotation = Graphics.getRotation();
 			TS_Point lastPoint = convertPoint(Touchscreen.getPoint(),rotation);
-	#ifdef TOUCH_DEBUG
-			Serial.print("r = ");
-			Serial.print(rotation);
-			Serial.print(" x = ");
-			Serial.print(lastPoint.x);
-			Serial.print(" y = ");
-			Serial.print(lastPoint.y);
-			Serial.print(" z = ");
-			Serial.println(lastPoint.z);
-	#endif
+			loggerTouch->debug("r=%d x=%d y=%d z=%d" ,rotation,lastPoint.x,lastPoint.y,lastPoint.z);
 			if (isLandingPad(lastPoint,rotation)) {
-	#ifdef TOUCH_DEBUG
-				Serial.println(PSTR("(main)Switching to menu"));
-	#endif
+				loggerTouch->debug("%s %s",getName(),PSTR("(main)Switching to menu"));
 				Graphics.setRotation(3);
 				Appregistry.jumpToMenu();
 				return true;
 			}
-	#ifdef TOUCH_DEBUG
-			Serial.print(PSTR("invoking app "));
-			Serial.println(Appregistry.getCurrentApp()->getName());
-	#endif
+			loggerTouch->debug("%s invoking app %s",getName(),Appregistry.getCurrentApp()->getName());
 			if (!Appregistry.getCurrentApp()->touch(lastPoint)) {
 				Appregistry.jumpToMenu();
 				return true;
@@ -194,11 +159,7 @@ public:
 		if (buffer == NULL) {
 			return true;
 		}
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.print(PSTR("from bluetooth ["));
-		Serial.print(buffer);
-		Serial.println(PSTR("]"));
-#endif
+		loggerVM->debug("from bluetooth [%s]",buffer);
 		App *notification = Appregistry.getApp("Notification");
 		Notification *n = (Notification *)notification;
 		n->addMessage(buffer);
@@ -238,13 +199,22 @@ public:
 void setup() {
 	setSyncProvider((getExternalTime)Teensy3Clock.get);
 	Serial.begin(9600);
-#ifdef VORTEXMANIPULATOR_DEBUG
-	while (!Serial) {
-	    ; // wait for serial port to connect. Needed for native USB
-	}
-	Serial.print(VERSION);
-	Serial.println(" starting...");
-#endif
+	loggerFactory.add(new LoggerInst("VM",LOG_LEVEL_INFOS));
+	loggerFactory.add(new LoggerInst("AppRegistry",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("TOUCH",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("GESTURE",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("Notification",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("Hardware",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("Menu",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("Gallery",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("Dalek",LOG_LEVEL_ERRORS));
+	loggerFactory.add(new LoggerInst("HRM",LOG_LEVEL_ERRORS));
+
+	loggerVM = loggerFactory.getLogger("VM");
+	loggerTouch = loggerFactory.getLogger("TOUCH");
+	loggerGesture = loggerFactory.getLogger("GESTURE");
+
+	loggerVM->info("Vortex Manipulator version %s\n",VERSION);
 	Hardware.init();
 	configuration.load();
 #ifdef RUN_STARTUP
@@ -253,14 +223,8 @@ void setup() {
 	Appregistry.init();
 	noInterrupts();
 	interrupts();
-#ifdef VORTEXMANIPULATOR_DEBUG
-	Serial.print("Screen: width = ");
-	Serial.print(Graphics.width());
-	Serial.print(" height = ");
-	Serial.println(Graphics.height());
-	Serial.println("end of setup");
-	Serial.read();
-#endif
+	loggerVM->debug("Screen: width = %d height = %d\n",Graphics.width(),Graphics.height());
+
 	intervals.create(10L,new HRAction()); // 10 milliseconds
 	intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
 	intervals.create(50L,new GestureWake());
@@ -268,32 +232,22 @@ void setup() {
 	intervalHardwareSleep = new IntervalCycle(MAX_CYCLE,new HardwareSleep());
 	intervals.create(intervalHardwareSleep);
 	intervals.create(new IntervalCycle(TOUCH_DELAY,new TouchDelay()));
+	loggerVM->debug("setup complete\n");
 }
 
 void recordTimestamp() {
 	if (timestampCycle++ > TIMESTAMP_CYCLE) {  // every 30 mins
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println("writing timestamp... ");
-		Serial.print(timestampCycle);
-		Serial.print(BLANK);
-		Serial.println(Hardware.timeString(now()));
-#endif
+		loggerVM->debug("writing timestamp... \n%d %s",timestampCycle,Hardware.timeString(now()));
 		timestampCycle = 0;
 		File timestampFile = SD.open(PSTR("ts.txt"), FILE_WRITE);
-#ifdef VORTEXMANIPULATOR_DEBUG
-		Serial.println(timestampFile);
-#endif
+		loggerVM->debug("%s",timestampFile);
 		if (timestampFile) {
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println("writing timestamp");
-#endif
+			loggerVM->debug("writing timestamp");
 			timestampFile.print(Hardware.dateString(now()));
 			timestampFile.print(BLANK);
 			timestampFile.println(Hardware.timeString(now()));
 			timestampFile.close();
-#ifdef VORTEXMANIPULATOR_DEBUG
-			Serial.println("finished writing timestamp");
-#endif
+			loggerVM->debug("finished writing timestamp");
 		}
 	}
 }
