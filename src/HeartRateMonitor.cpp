@@ -116,16 +116,20 @@ void HeartRateMonitor::display() {
 		figureScale();
 		y = (lasty-m_scaledLastMin)*m_lastScale;
 	}
-	volatile int x = m_lastX++;
+	m_lastX++;
 	m_lastX %= Graphics.width();
 	if (m_lastX == 0) {
 		initaliseGraph(bpm,interval);
 	}
-	y = constrain(y, 0, (SCREEN_HEIGHT));
-	Graphics.drawPixel(m_lastX,SCREEN_OFFSET+((SCREEN_HEIGHT)-y),BLACK);
+//	y = constrain(y, 0, (SCREEN_HEIGHT));
+//	Graphics.drawPixel(m_lastX,SCREEN_OFFSET+((SCREEN_HEIGHT)-y),BLACK);
+//	logger->debug("y=%d",y);
+
+	panelHR.drawPixel(m_lastX, panelHR.getSizey()-y, BLACK);
 }
 
 void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
+#ifdef POINCARE
 	Poincare *poincare = heartRateInterrupt.getPoincare();
 	int maxPoincare = poincare->getMax();
 	if (logger->isDebug()) {
@@ -136,11 +140,13 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 		}
 		Serial.println();
 	}
+#endif
 	logger->debug("m_lastMin=%d m_lastMax=%d bpm=%d m_lastScale=%d",m_lastMin,m_lastMax,bpm,m_lastScale);
 
-	Graphics.fillRect(0,0,150,100,WHITE); // panel #1
-	Graphics.fillRect(0,100,Graphics.width(),Graphics.height()-100,WHITE); // panel #2
-	Graphics.setCursor(10,20);// panel #1
+	panelText.clear(BLACK);
+	panelHR.clear(BLACK);
+	panelText.setCursor(10, 20);
+
 	uint16_t colour = GREEN;
 	if (bpm < configuration.getLowPulse()) {
 		colour = BLUE;
@@ -152,7 +158,9 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 	Graphics.setTextSize(2);
 	Graphics.print("BPM: ");
 	Graphics.print(bpm);
-	Graphics.setCursor(10,40);// panel #1
+
+	panelText.setCursor(10, 40);
+
 	Graphics.print("INT: ");
 	if (interval > 0 && interval < 10000) {
 		int i = interval;

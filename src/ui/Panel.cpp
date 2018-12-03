@@ -11,6 +11,10 @@
 void Panel::clear() {
 	Graphics.fillRect(m_x,m_y,m_sizex,m_sizey,m_colour);
 }
+void Panel::clear(int borderColour) {
+	clear();
+	border(borderColour);
+}
 void Panel::drawPixel(int x, int y, int colour) {
 	int x1 = constrain(x, 0, m_sizex);
 	int y1 = constrain(y, 0, m_sizey);
@@ -22,4 +26,7 @@ void Panel::setCursor(int x, int y) {
 void Panel::fillCircle(int x, int y, int r, int colour) {
 	Graphics.fillCircle(m_x+constrain(x,0,m_sizex),
 			constrain(m_y+y,0,m_sizey),r,colour);
+}
+void Panel::border(int colour) {
+	Graphics.drawRect(m_x, m_y, m_sizex, m_sizey, colour);
 }

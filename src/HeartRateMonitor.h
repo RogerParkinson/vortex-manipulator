@@ -13,7 +13,6 @@
 #include "ui/Panel.h"
 #include <cassert>
 
-//#define HEARTRATEMONITOR_DEBUG
 //#define POINCARE // turns on Poincare plot
 #define MAX_GUESS 0
 #define MIN_GUESS 112632
@@ -40,7 +39,7 @@ private:
 	virtual void figureScale();
 	Logger *logger;
 	Panel panelText = Panel(0,0,150,100,WHITE);
-	Panel panelHR = Panel(0,100,Graphics.width(),Graphics.height()-100,WHITE);
+	Panel panelHR = Panel(0,100,320,SCREEN_HEIGHT,WHITE);
 	Panel panelPoincare = Panel(160,0,160,100,WHITE);
 
 public:

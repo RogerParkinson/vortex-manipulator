@@ -42,9 +42,11 @@ public:
 		return m_y;
 	}
 	void clear();
+	void clear(int borderColour);
 	void drawPixel(int x, int y, int colour);
 	void setCursor(int x, int y);
 	void fillCircle(int x, int y, int r, int colour);
+	void border(int colour);
 };
 
 #endif /* PANEL_H_ */
