@@ -121,10 +121,6 @@ void HeartRateMonitor::display() {
 	if (m_lastX == 0) {
 		initaliseGraph(bpm,interval);
 	}
-//	y = constrain(y, 0, (SCREEN_HEIGHT));
-//	Graphics.drawPixel(m_lastX,SCREEN_OFFSET+((SCREEN_HEIGHT)-y),BLACK);
-//	logger->debug("y=%d",y);
-
 	panelHR.drawPixel(m_lastX, panelHR.getSizey()-y, BLACK);
 }
 
@@ -144,7 +140,7 @@ void HeartRateMonitor::initaliseGraph(int bpm, float interval) {
 	logger->debug("m_lastMin=%d m_lastMax=%d bpm=%d m_lastScale=%d",m_lastMin,m_lastMax,bpm,m_lastScale);
 
 	panelText.clear(BLACK);
-	panelHR.clear(BLACK);
+	panelHR.clear();
 	panelText.setCursor(10, 20);
 
 	uint16_t colour = GREEN;
