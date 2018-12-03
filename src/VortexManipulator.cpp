@@ -199,16 +199,16 @@ public:
 void setup() {
 	setSyncProvider((getExternalTime)Teensy3Clock.get);
 	Serial.begin(9600);
-	loggerFactory.add(new LoggerInst("VM",LOG_LEVEL_INFOS));
-	loggerFactory.add(new LoggerInst("AppRegistry",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("TOUCH",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("GESTURE",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("Notification",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("Hardware",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("Menu",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("Gallery",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("Dalek",LOG_LEVEL_ERRORS));
-	loggerFactory.add(new LoggerInst("HRM",LOG_LEVEL_ERRORS));
+	loggerFactory.add("VM",LOG_LEVEL_INFOS);
+	loggerFactory.add("AppRegistry",LOG_LEVEL_ERRORS);
+	loggerFactory.add("TOUCH",LOG_LEVEL_ERRORS);
+	loggerFactory.add("GESTURE",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Notification",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Hardware",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Menu",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Gallery",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Dalek",LOG_LEVEL_ERRORS);
+	loggerFactory.add("HRM",LOG_LEVEL_ERRORS);
 
 	loggerVM = loggerFactory.getLogger("VM");
 	loggerTouch = loggerFactory.getLogger("TOUCH");
