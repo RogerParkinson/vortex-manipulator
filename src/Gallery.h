@@ -11,9 +11,9 @@
 #ifndef Gallery_H_
 #define Gallery_H_
 #include "AppRegistry.h"
-#include "gallery/ImageDisplayBMP.h"
-#include "gallery/ImageDisplayTFT.h"
-#include "gallery/ImageDisplay.h"
+//#include "gallery/ImageDisplayBMP.h"
+//#include "gallery/ImageDisplayTFT.h"
+//#include "gallery/ImageDisplay.h"
 
 //#define GALLERY_DEBUG
 
