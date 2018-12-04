@@ -79,7 +79,7 @@ char *Gallery::findNextFile() {
 		File entry = m_root.openNextFile();
 		if (!entry) {
 			// no more files
-			logger->error("no more files");
+			logger->info("no more files");
 			break;
 		}
 		if (entry.isDirectory()) {
@@ -99,7 +99,7 @@ char *Gallery::findNextFile() {
 		}
 		entry.close();
 	}
-	logger->error("failed to find a file");
+	logger->info("failed to find a file");
 	return NULL;
 }
 
