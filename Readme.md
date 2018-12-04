@@ -1,5 +1,4 @@
-Vortex Manipulator
---
+#Vortex Manipulator
 
 Mostly inspired by the wrist device worn by Captain Jack Harkness in _Dr Who_ and _Torchwood_, hence the name. However the design wandered somewhat from that initial idea so the look is a bit different. This is the idea I started with:
 
@@ -27,8 +26,7 @@ Perhaps more importantly it is a development _platform_. There is plenty of spar
 
 The assembly is a mix of leather and a 3D printed frame.
 
-Parts
---
+##Parts
 
  * [Teensy 3.2](https://www.pjrc.com/store/teensy32.html) microprocessor board
  * [LSM303](http://nz.element14.com/stmicroelectronics/lsm303dlhc/sensor-3-ch-accel-mag-mod-14lga/dp/2068595) Compass/accelerometer IC *
@@ -48,42 +46,25 @@ Parts
  
 Those marked with * are all surface mounted (SMD) parts.
  
-Making the Icons
---
+##Making the Icons
 
-To make the icons I used The Gimp to create a 28x28 pixel image then exported it as a .h file. This .h file cannot be directly used because it is an awkward format. So I pass it through a transformation I wrote in C++, the code looks like this:
+I developed an interesting technique for generating the icons for this project and I put it in its own [project](https://github.com/RogerParkinson/MakeIcons).
 
-```
-const char *pImg = bitmap;
+##The SD CARD
 
-char pRGB[3];
-printf("static uint16_t myicon[] PROGMEM = {");
-for (unsigned int j = 0; j < size; j++) {
+The project uses an SD Card and you'll find a copy of mine in the SDBackup directory. It includes some bmp files which are images displayed by the gallery app, a configuration file calle hconfig.txt and a log file called datalog.txt.
 
-	printf("\n\t");
+The configuration file is one line: 12,120,150,
+the 12 was once a timezone but I no longer use that. 120 and 150 are heart rate limits. The display turns green when you pass 120 and red when you pass 150. For me green means I'm in a good exercise zone, but your numbers may be different.
 
-	for (unsigned int i = 0; i < size; i++) {
-		pRGB[0] = ((pImg[3] - 33)) | (((pImg[2] - 33)& 0x3)<<6);
-		pRGB[1] = ((((pImg[2] - 33) >> 2) & 0xF) | ((pImg[1] - 33) &0xF)<<4);
-		pRGB[2] = (((pImg[1] - 33) >> 4) & 0x3 ) | ((pImg[0] - 33)<<2);
-		unsigned int colour = ((pRGB[0]) & 0x0000FF)
-				| ((((unsigned int) pRGB[1]) << 8) & 0x00FF00)
-				| ((((unsigned int) pRGB[2]) << 16) & 0xFF0000);
-		unsigned int colour16 = ((colour & 0x0000F8) >> 3)
-		         | ((colour & 0x00F800) >> 5)
-		         | ((colour & 0xF80000) >> 8);
-			printf("0x%04x,",colour16);
-		pImg += 4;
-	}
-}
-printf("0x0};\n");
-```
-where bitmap is the generated icon data in the .h file. The result is a 16 bit colour map that can be pasted into the code and the icon rendered using the `Graphics.drawPixel(x, y, pixel);` where pixel is the 16 bit pixel value from the array.
-
-Making the Gallery Images
---
-
-These live on the sd card. You can have TFT or BMP format, but BMP is better tested.
-To make a compatible image go into The GIMP and shrink it to 240x320 and export it as a BMP file. Use these options on the export:
+You can add your own bmp files. As long as they are 240x320 BMP format they will display in the gallery. When I export mine from Gimp I use these settings:
 
 <img src="images/gimp-export.png"/>
+
+Finally the datalog.txt file is a log of heart rates. The first column is a timestamp, then the beast per minute and finally the last interval between beats. It logs this every 10 minutes, the time is set in the setup() method in VortexManipulator.cpp:
+
+```
+intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
+``` 
+
+
