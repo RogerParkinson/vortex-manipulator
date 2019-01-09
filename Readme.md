@@ -1,4 +1,5 @@
-#Vortex Manipulator
+Vortex Manipulator
+=
 
 Mostly inspired by the wrist device worn by Captain Jack Harkness in _Dr Who_ and _Torchwood_, hence the name. However the design wandered somewhat from that initial idea so the look is a bit different. This is the idea I started with:
 
@@ -26,7 +27,8 @@ Perhaps more importantly it is a development _platform_. There is plenty of spar
 
 The assembly is a mix of leather and a 3D printed frame.
 
-##Parts
+Parts
+-
 
  * [Teensy 3.2](https://www.pjrc.com/store/teensy32.html) microprocessor board
  * [LSM303](http://nz.element14.com/stmicroelectronics/lsm303dlhc/sensor-3-ch-accel-mag-mod-14lga/dp/2068595) Compass/accelerometer IC *
@@ -46,11 +48,13 @@ The assembly is a mix of leather and a 3D printed frame.
  
 Those marked with * are all surface mounted (SMD) parts.
  
-##Making the Icons
+Making the Icons
+-
 
 I developed an interesting technique for generating the icons for this project and I put it in its own [project](https://github.com/RogerParkinson/MakeIcons).
 
-##The SD CARD
+The SD CARD
+-
 
 The project uses an SD Card and you'll find a copy of mine in the SDBackup directory. It includes some bmp files which are images displayed by the gallery app, a configuration file calle hconfig.txt and a log file called datalog.txt.
 

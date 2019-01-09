@@ -9,7 +9,7 @@ String command;
 Intervals intervals;
 IntervalCycle *intervalHardwareSleep;
 
-LoggerFactory loggerFactory = LoggerFactory(true);
+LoggerFactory loggerFactory = LoggerFactory(false);
 Logger *loggerVM;
 Logger *loggerTouch;
 Logger *loggerGesture;
@@ -29,8 +29,7 @@ public:
 	HRLogAction(){};
 	virtual const char* getName() {return PSTR("HRLogAction");};
 	virtual boolean execute() {
-		Serial.print("firing ");
-		Serial.println(getName());
+		loggerVM->debug(getName());
 		heartRateInterrupt.log();
 		return true;
 	}
@@ -116,7 +115,7 @@ public:
 	TouchDelay(){};
 	virtual const char* getName() {return PSTR("TouchDelay");};
 	virtual boolean execute() {
-		loggerTouch->debug(getName());
+//		loggerTouch->debug(getName());
 		boolean istouched = Touchscreen.touched();
 		bool asleep = Hardware.isSleeping();
 		if (istouched) {
@@ -129,7 +128,7 @@ public:
 				lastEventMicros = micros();
 			}
 			intervalHardwareSleep->reset();
-			loggerTouch->debug("%s %s",getName(),PSTR("reset done"));
+//			loggerTouch->debug("%s %s",getName(),PSTR("reset done"));
 			uint8_t rotation = Graphics.getRotation();
 			TS_Point lastPoint = convertPoint(Touchscreen.getPoint(),rotation);
 			loggerTouch->debug("r=%d x=%d y=%d z=%d" ,rotation,lastPoint.x,lastPoint.y,lastPoint.z);
@@ -139,7 +138,7 @@ public:
 				Appregistry.jumpToMenu();
 				return true;
 			}
-			loggerTouch->debug("%s invoking app %s",getName(),Appregistry.getCurrentApp()->getName());
+//			loggerTouch->debug("%s invoking app %s",getName(),Appregistry.getCurrentApp()->getName());
 			if (!Appregistry.getCurrentApp()->touch(lastPoint)) {
 				Appregistry.jumpToMenu();
 				return true;
@@ -201,7 +200,7 @@ void setup() {
 	Serial.begin(9600);
 	loggerFactory.add("VM",LOG_LEVEL_INFOS);
 	loggerFactory.add("AppRegistry",LOG_LEVEL_ERRORS);
-	loggerFactory.add("TOUCH",LOG_LEVEL_ERRORS);
+	loggerFactory.add("TOUCH",LOG_LEVEL_DEBUG);
 	loggerFactory.add("GESTURE",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Notification",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Hardware",LOG_LEVEL_ERRORS);
@@ -256,7 +255,6 @@ void loop() {
 //	recordTimestamp();
 	intervals.check();
 	
-//	// Check the gesture status every 100 cycles.
 	bool asleep = Hardware.isSleeping();
 
 	// refresh the current app if its update interval was reached.

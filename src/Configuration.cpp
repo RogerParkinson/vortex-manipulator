@@ -32,7 +32,7 @@ void Configuration::load() {
 	}
 	// if the file isn't open, pop up an error:
 	else {
-		Serial.println(PSTR("error opening hconfig.txt"));
+		loggerHardware->error("error opening hconfig.txt");
 	}
 }
 
