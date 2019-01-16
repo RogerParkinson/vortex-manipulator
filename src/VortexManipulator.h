@@ -21,6 +21,9 @@
 #define TOUCH_DELAY 25
 #define LANDING_PAD 30
 
+//#define SUPPRESS_GESTURE_SLEEP // suppresses sleep when hand is lowered (for testing)
+//#define SUPPRESS_INTERVAL_HARDWARE_SLEEP // suppresses sleep on timeout, actually cycle count (for testing)
+
 class Action1: public Action {
 public:
 	Action1();

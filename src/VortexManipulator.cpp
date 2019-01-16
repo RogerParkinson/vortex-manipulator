@@ -50,11 +50,13 @@ public:
 			Appregistry.getCurrentApp()->display();
 			return true;
 		}
+#ifndef SUPPRESS_GESTURE_SLEEP
 		if (!asleep && (currentGesture == 2)) {
 			loggerGesture->debug(PSTR("sleeping from gesture"));
 			Hardware.sleep();
 			return true;
 		}
+#endif
 		return false;
 	}
 	virtual ~GestureWake(){};
@@ -65,10 +67,12 @@ public:
 	virtual const char* getName() {return PSTR("HardwareSleep");};
 	virtual boolean execute() {
 		loggerVM->debug(getName());
+#ifndef SUPPRESS_INTERVAL_HARDWARE_SLEEP
 		Hardware.sleep();
-		cycle = 0; // if we get here then start again.
 		Appregistry.getCurrentApp()->setup();
 		Appregistry.getCurrentApp()->display();
+#endif
+		cycle = 0; // if we get here then start again.
 		return true;
 	}
 	virtual ~HardwareSleep(){};
