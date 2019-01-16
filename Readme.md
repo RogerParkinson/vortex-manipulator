@@ -53,7 +53,7 @@ Making the Icons
 
 I developed an interesting technique for generating the icons for this project and I put it in its own [project](https://github.com/RogerParkinson/MakeIcons).
 
-The SD CARD
+The SD card
 -
 
 The project uses an SD Card and you'll find a copy of mine in the SDBackup directory. It includes some bmp files which are images displayed by the gallery app, a configuration file calle hconfig.txt and a log file called datalog.txt.

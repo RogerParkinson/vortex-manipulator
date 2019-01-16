@@ -216,9 +216,7 @@ void setup() {
 	loggerVM->info("Vortex Manipulator version %s\n",VERSION);
 	Hardware.init();
 	configuration.load();
-#ifdef RUN_STARTUP
 	startup.run();
-#endif
 	Appregistry.init();
 	noInterrupts();
 	interrupts();

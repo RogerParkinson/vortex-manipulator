@@ -8,6 +8,7 @@
 #ifndef STARTUP_H_
 #define STARTUP_H_
 #include "../Hardware.h"
+//#define STARTUP_SLOW
 
 
 class Startup {

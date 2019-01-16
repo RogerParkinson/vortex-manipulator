@@ -33,6 +33,7 @@ void Startup::run() {
 }
 
 void Startup::print(const char *s) {
+#ifdef STARTUP_SLOW
 	byte i = 0;
 	char p = s[i++];
 	while (p != 0) {
@@ -42,6 +43,9 @@ void Startup::print(const char *s) {
 		delay(100);
 		p = s[i++];
 	}
+#else
+	Graphics.print(s);
+#endif
 }
 
 void Startup::println(const char *s) {
