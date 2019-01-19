@@ -17,6 +17,8 @@ Mine is a little different, I needed more space to do what I want, so it is a bi
  * Sleep (power save) function, wakes up when the power button is pressed.
  * Notifications board. Still a work in progress but it can accept Bluetooth messages and display them here.
 
+[![Watch the video](https://youtu.be/WImzifKEVy0/maxresdefault.jpg)](https://youtu.be/WImzifKEVy0)
+
 Hardware consists of a Teensy 3.2 mounted on a custom board [the Main Board](eagle/MainBoard/Readme.md) which contains circuitry for charging the attached LiPo battery when the USB port is connected, and an LSM303 to provide compass and accelerometer functions.
 
 A second [ILI9341 custom connector board](eagle/ILI9341-Touch-connector/Readme.md) connects to an ILI9341 touch screen. This board has a touch controller and a connector strip that matches the strip on the side of the main board.
