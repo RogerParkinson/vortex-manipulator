@@ -19,6 +19,8 @@ Mine is a little different, I needed more space to do what I want, so it is a bi
 
 [![Watch the video](https://youtu.be/WImzifKEVy0/maxresdefault.jpg)](https://youtu.be/WImzifKEVy0)
 
+[Lots more details here](https://github.com/RogerParkinson/vortex-manipulator)
+
 Hardware consists of a Teensy 3.2 mounted on a custom board [the Main Board](eagle/MainBoard/Readme.md) which contains circuitry for charging the attached LiPo battery when the USB port is connected, and an LSM303 to provide compass and accelerometer functions.
 
 A second [ILI9341 custom connector board](eagle/ILI9341-Touch-connector/Readme.md) connects to an ILI9341 touch screen. This board has a touch controller and a connector strip that matches the strip on the side of the main board.
