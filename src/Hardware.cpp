@@ -131,7 +131,8 @@ void Hardware_::init()
 	loggerHardware->debug("tft done");
 
 	// initialise bluetooth
-	bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
+//	bluetooth.begin(115200);  // The Bluetooth Mate defaults to 115200bps
+	bluetooth.begin(9600);  // The CC2450 defaults to 9600bps
 //	bluetooth.print("$");  // Print three times individually
 //	bluetooth.print("$");
 //	bluetooth.print("$");  // Enter command mode

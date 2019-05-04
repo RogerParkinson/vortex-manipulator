@@ -8,6 +8,7 @@ IntervalTimer logTimer;
 String command;
 Intervals intervals;
 IntervalCycle *intervalHardwareSleep;
+String notificationCache = "";
 
 LoggerFactory loggerFactory = LoggerFactory(false);
 Logger *loggerVM;
@@ -163,9 +164,23 @@ public:
 			return true;
 		}
 		loggerVM->debug("from bluetooth [%s]",buffer);
+		if (strcmp(buffer,"Connected") == 0) {
+			return true;
+		}
+		if (strrchr(buffer,'~') == NULL) {
+			// partial message, store in cache
+			notificationCache.append(buffer);
+			return true;
+		} else {
+			notificationCache.append(buffer);
+			int i = notificationCache.indexOf('~');
+			notificationCache = notificationCache.substring(0, i);
+		}
+		loggerVM->debug("line from bluetooth [%s]",notificationCache.c_str());
 		App *notification = Appregistry.getApp("Notification");
 		Notification *n = (Notification *)notification;
-		n->addMessage(buffer);
+		n->addMessage(notificationCache.c_str());
+		notificationCache = "";
 		return true;
 	}
 	virtual ~SerialCheck(){};
@@ -202,7 +217,8 @@ public:
 void setup() {
 	setSyncProvider((getExternalTime)Teensy3Clock.get);
 	Serial.begin(9600);
-	loggerFactory.add("VM",LOG_LEVEL_INFOS);
+
+	loggerFactory.add("VM",LOG_LEVEL_DEBUG);
 	loggerFactory.add("AppRegistry",LOG_LEVEL_ERRORS);
 	loggerFactory.add("TOUCH",LOG_LEVEL_DEBUG);
 	loggerFactory.add("GESTURE",LOG_LEVEL_ERRORS);
@@ -216,6 +232,8 @@ void setup() {
 	loggerVM = loggerFactory.getLogger("VM");
 	loggerTouch = loggerFactory.getLogger("TOUCH");
 	loggerGesture = loggerFactory.getLogger("GESTURE");
+
+	//loggerFactory.dump();
 
 	loggerVM->info("Vortex Manipulator version %s\n",VERSION);
 	Hardware.init();
