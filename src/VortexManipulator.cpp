@@ -186,41 +186,13 @@ public:
 	virtual ~SerialCheck(){};
 };
 
-/*
-  SerialEvent occurs whenever a new data comes in the hardware serial RX. This
-  routine is run between each time loop() runs, so using delay inside loop can
-  delay response. Multiple bytes of data may now be available.
-*/
-//char buffer[1000];
-//void serialEvent() {
-//	  int i = 0;
-//	  while(Serial.available()) buffer[i++] = Serial.read();
-//	  buffer[i] = 0;
-//	  Serial.print("serialEvent received: ");
-//	  Serial.println(buffer);
-//	  if (strcmp(&buffer[0],"GD")==0) {
-//		Serial.print("gesture = ");
-//		gesture.dump();
-//		return;
-//	  }
-//	  if (strcmp(&buffer[0],"GC")==0) {
-//		Serial.println("Gesture clear");
-//		gesture.clear();
-//		Serial.print("gesture = ");
-//		gesture.dump();
-//		return;
-//	  }
-//	  App *notification = Appregistry.getApp("Notification");
-//	  Notification *n = (Notification *)notification;
-//	  n->addMessage(buffer);
-//}
 void setup() {
 	setSyncProvider((getExternalTime)Teensy3Clock.get);
 	Serial.begin(9600);
 
-	loggerFactory.add("VM",LOG_LEVEL_DEBUG);
+	loggerFactory.add("VM",LOG_LEVEL_INFOS);
 	loggerFactory.add("AppRegistry",LOG_LEVEL_ERRORS);
-	loggerFactory.add("TOUCH",LOG_LEVEL_DEBUG);
+	loggerFactory.add("TOUCH",LOG_LEVEL_INFOS);
 	loggerFactory.add("GESTURE",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Notification",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Hardware",LOG_LEVEL_ERRORS);

@@ -15,7 +15,7 @@ Mine is a little different, I needed more space to do what I want, so it is a bi
  * Picture gallery (displays pictures from the SD card)
  * Heart rate monitor, including display graph and data log to SD card.
  * Sleep (power save) function, wakes up when the power button is pressed.
- * Notifications board. Still a work in progress but it can accept Bluetooth messages and display them here.
+ * Notifications board. Messages from a Bluetooth device (eg a phone) display here.
 
 [![Watch the video](https://youtu.be/WImzifKEVy0/maxresdefault.jpg)](https://youtu.be/WImzifKEVy0)
 
