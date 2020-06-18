@@ -84,6 +84,18 @@ void Notification::notify(const char *s) {
 };
 void Notification::addMessage(const char *s) {
 	loggerNotification->debug("addMessage...[%s]",s);
+	if (strncmp(s,"%%",2) == 0) {
+		// this is a time set message
+		time_t rawtime = strtoul(&s[2],NULL,10);
+		setTime(rawtime);
+		long adjustedDate = now();
+		Teensy3Clock.set(adjustedDate);
+		loggerNotification->debug("setting date to [%s]",
+			Hardware.dateString(adjustedDate));
+		loggerNotification->debug("setting time to [%s]",
+			Hardware.timeString(adjustedDate));
+		return;
+	}
 	NotificationInstance *latest;
 	if (m_rootNotificationInstance == NULL) {
 		m_rootNotificationInstance = new NotificationInstance(s);

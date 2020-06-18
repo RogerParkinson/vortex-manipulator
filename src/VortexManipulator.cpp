@@ -10,7 +10,7 @@ Intervals intervals;
 IntervalCycle *intervalHardwareSleep;
 String notificationCache = "";
 
-LoggerFactory loggerFactory = LoggerFactory(false);
+LoggerFactory loggerFactory = LoggerFactory(true);
 Logger *loggerVM;
 Logger *loggerTouch;
 Logger *loggerGesture;
@@ -190,11 +190,11 @@ void setup() {
 	setSyncProvider((getExternalTime)Teensy3Clock.get);
 	Serial.begin(9600);
 
-	loggerFactory.add("VM",LOG_LEVEL_INFOS);
+	loggerFactory.add("VM",LOG_LEVEL_DEBUG);
 	loggerFactory.add("AppRegistry",LOG_LEVEL_ERRORS);
 	loggerFactory.add("TOUCH",LOG_LEVEL_INFOS);
 	loggerFactory.add("GESTURE",LOG_LEVEL_ERRORS);
-	loggerFactory.add("Notification",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Notification",LOG_LEVEL_DEBUG);
 	loggerFactory.add("Hardware",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Menu",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Gallery",LOG_LEVEL_ERRORS);
