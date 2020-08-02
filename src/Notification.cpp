@@ -39,6 +39,11 @@ static uint16_t myicon[] PROGMEM = {
 
 const char *appname = PSTR("Notification");
 
+// New Zealand Time Zone
+TimeChangeRule nnzSTD = {"NZST", First, Sun, Apr, 3, 720};   // UTC + 12 hours
+TimeChangeRule nnzDST = {"NZDT", Last, Sun, Sep, 2, 780};    // UTC + 13 hours
+Timezone nnz(nnzDST, nnzSTD);
+
 Notification::Notification(): App() {
 	// Keep the constructor empty and do most things in the init()
 	m_rootNotificationInstance = NULL;
@@ -68,7 +73,8 @@ void Notification::setup() {
 		return;
 	}
 	while (n != NULL) {
-		Graphics.printf(PSTR("%02d:%02d "),hour(n->m_timeStamp),minute(n->m_timeStamp));
+		long adjustedDate = nnz.toLocal(n->m_timeStamp);
+		Graphics.printf(PSTR("%02d:%02d "),hour(adjustedDate),minute(adjustedDate));
 		Graphics.println(n->m_content->c_str());
 		n = n->m_next;
 	}
