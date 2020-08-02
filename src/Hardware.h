@@ -165,6 +165,7 @@ extern Hardware_ Hardware;
 extern XPT2046_Touchscreen Touchscreen;
 extern ILI9341_t3 Graphics;
 extern MAX30105 particleSensor;
+extern Timezone nz;
 
 
 #endif /* HARDWARE_H_ */

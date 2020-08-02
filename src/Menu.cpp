@@ -18,7 +18,7 @@ void Menu::display() {
 	Graphics.setCursor(0,Graphics.height()-10);
 	Graphics.setTextColor(WHITE);
 	Graphics.fillRect(0, Graphics.height()-10, Graphics.width(), 10 , BLACK);
-	long adjustedDate = now();
+	long adjustedDate = nz.toLocal(now());
 
 	Graphics.print(Hardware.timeString(adjustedDate));
 	Graphics.print(BLANK);

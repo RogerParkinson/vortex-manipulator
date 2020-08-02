@@ -13,6 +13,10 @@
 
 ILI9341_t3 Graphics(TFT_CS, TFT_DC);
 MAX30105 particleSensor;
+TimeChangeRule nzSTD = {"NZST", First, Sun, Apr, 3, 720};   // UTC + 12 hours
+TimeChangeRule nzDST = {"NZDT", Last, Sun, Sep, 2, 780};    // UTC + 13 hours
+Timezone nz(nzDST, nzSTD);
+
 
 // For better pressure precision, we need to know the resistance
 // between X+ and X- Use any multimeter to read it
