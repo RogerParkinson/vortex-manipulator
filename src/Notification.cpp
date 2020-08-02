@@ -84,7 +84,8 @@ void Notification::notify(const char *s) {
 };
 void Notification::addMessage(const char *s) {
 	loggerNotification->debug("addMessage...[%s]",s);
-	if (strncmp(s,"%%",2) == 0) {
+	int start = 0;
+	if (strncmp(&s[start],"%%",2) == 0) {
 		// this is a time set message
 		time_t rawtime = strtoul(&s[2],NULL,10);
 		setTime(rawtime);
@@ -101,8 +102,9 @@ void Notification::addMessage(const char *s) {
 		m_rootNotificationInstance = new NotificationInstance(s);
 		latest = m_rootNotificationInstance;
 	} else {
+		loggerNotification->debug("adding...[%s]",&s[start]);
 		NotificationInstance *n = findLastNotification(m_rootNotificationInstance);
-		latest = new NotificationInstance(s,n);
+		latest = new NotificationInstance(&s[start],n);
 	}
 	count++;
 	while (count > MAX_NOTIFICATIONS) {
@@ -131,9 +133,7 @@ void Notification::deleteLastNotification(NotificationInstance *n) {
 	}
 };
 NotificationInstance *Notification::findLastNotification(NotificationInstance *root) {
-#ifdef NOTIFICATION_DEBUG
-	Serial.println("Notification::findLastNotification...");
-#endif
+	loggerNotification->debug("Notification::findLastNotification...");
 	if (root == NULL) {
 		return NULL;
 	}

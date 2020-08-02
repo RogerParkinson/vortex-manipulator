@@ -167,6 +167,9 @@ public:
 		if (strcmp(buffer,"Connected") == 0) {
 			return true;
 		}
+		if (strcmp(buffer,"ERROR") == 0) {
+			return true;
+		}
 		if (strrchr(buffer,'~') == NULL) {
 			// partial message, store in cache
 			notificationCache.append(buffer);
@@ -190,11 +193,11 @@ void setup() {
 	setSyncProvider((getExternalTime)Teensy3Clock.get);
 	Serial.begin(9600);
 
-	loggerFactory.add("VM",LOG_LEVEL_DEBUG);
+	loggerFactory.add("VM",LOG_LEVEL_INFOS);
 	loggerFactory.add("AppRegistry",LOG_LEVEL_ERRORS);
 	loggerFactory.add("TOUCH",LOG_LEVEL_INFOS);
 	loggerFactory.add("GESTURE",LOG_LEVEL_ERRORS);
-	loggerFactory.add("Notification",LOG_LEVEL_DEBUG);
+	loggerFactory.add("Notification",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Hardware",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Menu",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Gallery",LOG_LEVEL_ERRORS);
