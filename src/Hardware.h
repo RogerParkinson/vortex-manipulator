@@ -131,6 +131,7 @@ public:
 	bool isSDOK() { return m_sdOK;};
 	bool beginSD();
 	const char *timeString(long adjustedDate);
+	const char *timeString(int hour, int minute, int second);
 	const char *dateString(long adjustedDate);
 	void setCompassCorrection(const char *str);
 	int getCompassCorrection();

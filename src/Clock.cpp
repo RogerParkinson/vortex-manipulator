@@ -37,8 +37,10 @@ static uint16_t myicon[] PROGMEM = {
 	0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0x0000,0x0000,0x0000,0xffdf,0xbdd7,0x0000,0x0000,
 	0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0xffdf,0x0000,0xce59,0x0000,0x0000,0xce59,0x0000,0x0000,0x0000,0x0};
 
+
 Clock::Clock(): App() {
 	// Keep the constructor empty and do most things in the init()
+	loggerClock = loggerFactory.getLogger("Clock");
 }
 void Clock::init() {
 	m_noise = false;
@@ -70,6 +72,12 @@ boolean Clock::touch(TS_Point p) {
 	else if (m_buttonMars->isClicked(p)) {
 		m_buttonMars->flash();
 		m_mars = !m_mars;
+		m_buttonEarth->draw();
+	}
+	else if (m_buttonEarth->isClicked(p)) {
+		m_buttonEarth->flash();
+		m_mars = !m_mars;
+		m_buttonMars->draw();
 	}
 	return true;
 }
@@ -85,31 +93,33 @@ void Clock::display() {
 	Graphics.setTextSize(3);
 	Graphics.setFont(Arial_20);
 
-	long adjustedDate = nz.toLocal(now());
-	if (m_mars) {
-		// display mars time
-		float JDUT = 2440587.5+(adjustedDate/SECONDS_PER_DAY);
-		float JDTT = JDUT +(37+32.184)/86400;
-		float deltaTJ2000 = JDTT - 2451545.0;
-		float msd = (((deltaTJ2000 - 4.5)/1.027491252)+44796.0-0.00096);
 
-		int mtcHours = ((int)(24 * msd)) % 24;
-		int mtcMins = ((int)(24*60*msd)) % 60;
-		int mtcSeconds = ((int)(24*60*60*msd)) % 60;
-		Graphics.print(mtcHours);
-		Graphics.print(":");
-		Graphics.print(mtcMins);
-		Graphics.print(":");
-		Graphics.print(mtcSeconds);
-		Graphics.setCursor(50,100);
-		Graphics.println(msd);
+	if (m_mars) {
+		unsigned long mslong = (unsigned long) now();
+		double msdouble = mslong;
+		double JDUT = (msdouble / 8.64E4) + 2440587.5F; // A2
+		double TT_UTC = 64.184F; // A4
+		double JDTT = JDUT + (TT_UTC/86400.0F); // A5
+		double MST =  24  * ( ((JDTT - 2451549.5) / 1.0274912517) + 44796.0 - 0.0009626 );
+		unsigned long MSTLong = MST;
+		double MSTFraction = MST - MSTLong;
+		long hours = MSTLong % 24;
+		MSTFraction = MSTFraction * 100 * 0.6;
+		int minutes = MSTFraction;
+		int seconds = (MSTFraction - minutes) * 100 * 0.6;
+		Graphics.print(Hardware.timeString(hours,minutes,seconds));
+		Graphics.setCursor(50,10);
 		Graphics.setFont(Hardware.getDefaultFont());
+		Graphics.println("tz Airy-0, Sinus Meridiani");
 	} else {
 		// Earth time
+		long adjustedDate = nz.toLocal(now());
 		Graphics.println(Hardware.timeString(adjustedDate));
 		Graphics.setCursor(50,100);
 		Graphics.println(Hardware.dateString(adjustedDate));
+		Graphics.setCursor(50,10);
 		Graphics.setFont(Hardware.getDefaultFont());
+		Graphics.println("tz Auckland, New Zealand");
 	}
 }
 

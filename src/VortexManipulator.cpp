@@ -203,6 +203,7 @@ void setup() {
 	loggerFactory.add("Gallery",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Dalek",LOG_LEVEL_ERRORS);
 	loggerFactory.add("HRM",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Clock",LOG_LEVEL_DEBUG);
 
 	loggerVM = loggerFactory.getLogger("VM");
 	loggerTouch = loggerFactory.getLogger("TOUCH");

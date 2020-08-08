@@ -272,6 +272,10 @@ const char *Hardware_::timeString(long adjustedDate) {
 	sprintf(dstring, PSTR("%02d:%02d:%02d"),hour(adjustedDate),minute(adjustedDate),second(adjustedDate));
 	return dstring;
 }
+const char *Hardware_::timeString(int hour, int minute, int second) {
+	sprintf(dstring, PSTR("%02d:%02d:%02d"),hour,minute,second);
+	return dstring;
+}
 const char *Hardware_::dateString(long adjustedDate) {
 	sprintf(dstring, PSTR("%04d-%02d-%02d"),year(adjustedDate),month(adjustedDate),day(adjustedDate));
 	return dstring;
