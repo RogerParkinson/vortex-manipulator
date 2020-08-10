@@ -69,7 +69,7 @@ You can add your own bmp files. As long as they are 240x320 BMP format they will
 
 <img src="images/gimp-export.png"/>
 
-Finally the datalog.txt file is a log of heart rates. The first column is a timestamp, then the beast per minute and finally the last interval between beats. It logs this every 10 minutes, the time is set in the setup() method in VortexManipulator.cpp:
+Finally the datalog.txt file is a log of heart rates. The first column is a timestamp, then the beats per minute and finally the last interval between beats. It logs this every 10 minutes, the time is set in the setup() method in VortexManipulator.cpp:
 
 ```
 intervals.create(10*60*1000L,new HRLogAction()); // 10 minutes
