@@ -194,7 +194,7 @@ void setup() {
 	loggerFactory.add("AppRegistry",LOG_LEVEL_ERRORS);
 	loggerFactory.add("TOUCH",LOG_LEVEL_INFOS);
 	loggerFactory.add("GESTURE",LOG_LEVEL_ERRORS);
-	loggerFactory.add("Notification",LOG_LEVEL_ERRORS);
+	loggerFactory.add("Notification",LOG_LEVEL_INFOS);
 	loggerFactory.add("Hardware",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Menu",LOG_LEVEL_ERRORS);
 	loggerFactory.add("Gallery",LOG_LEVEL_ERRORS);
