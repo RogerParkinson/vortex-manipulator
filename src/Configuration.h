@@ -7,7 +7,7 @@
 
 #ifndef CONFIGURATION_H_
 #define CONFIGURATION_H_
-#define VERSION "1.53"
+#define VERSION "1.54"
 #include <Logger.h>
 
 
