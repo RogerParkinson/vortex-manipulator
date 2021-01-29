@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project>
+    	
     <configuration id="io.sloeber.core.toolChain.release.1718037598" name="Release">
         		
         <extension point="org.eclipse.cdt.core.LanguageSettingsProvider">
@@ -22,5 +23,4 @@
         	
     </configuration>
     
-
 </project>
